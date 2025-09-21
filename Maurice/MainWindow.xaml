@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="Maurice.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="Maurice"
+    x:Name="RootWindow">
+
+    <Window.SystemBackdrop>
+        <MicaBackdrop />
+    </Window.SystemBackdrop>
+
+    <NavigationView x:Name="NavView"
+                    IsSettingsVisible="false"
+                    Loaded="NavView_Loaded"
+                    ItemInvoked="NavView_ItemInvoked">
+        <NavigationView.MenuItems>
+            <NavigationViewItem Content="Facturas" Icon="Page2" ToolTipService.ToolTip="Facturas" SelectsOnInvoked="False">
+                <NavigationViewItem.MenuItems>
+                    <NavigationViewItem Content="Buscar Factura" Icon="Find" Tag="BuscarFactura"/>
+                    <NavigationViewItem Content="Agregar Factura" Icon="NewFolder" Tag="AgregarFactura"/>
+                </NavigationViewItem.MenuItems>
+            </NavigationViewItem>
+        </NavigationView.MenuItems>
+        <NavigationView.FooterMenuItems>
+            <NavigationViewItem Content="Configuracion" Icon="Setting" ToolTipService.ToolTip="Configuracion" Tag="Configuracion"/>
+        </NavigationView.FooterMenuItems>
+        <Frame x:Name="contentFrame"/>
+    </NavigationView>
+</Window>

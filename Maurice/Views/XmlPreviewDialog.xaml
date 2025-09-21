@@ -1,0 +1,38 @@
+<ContentDialog x:Class="Maurice.Views.XmlPreviewDialog"
+               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+               Title="Revisar datos XML"
+               PrimaryButtonText="Guardar"
+               SecondaryButtonText="Cancelar"
+               DefaultButton="Primary">
+
+    <Grid Width="800">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Revise los datos extraídos antes de guardar:"
+                   Margin="0,0,0,12"/>
+
+        <ListView ItemsSource="{Binding XmlData}"
+                  Grid.Row="1"
+                  MaxHeight="400">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding Key}" FontWeight="Bold" />
+                        <TextBox Text="{Binding Value}" 
+                                 Grid.Column="1"
+                                 IsReadOnly="True"
+                                 BorderThickness="0"/>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+</ContentDialog>
