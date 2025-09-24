@@ -7,25 +7,50 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-		Width="400"
-        Height="250">
+    Width="400"
+    Height="350">
 
     <StackPanel Margin="15">
-        <TextBlock Text="Buscar por:" />
-        <ComboBox 
-			ItemsSource="{Binding SearchOptions}"
-			SelectedIndex="0"
-			MaxDropDownHeight="300"
-			Margin="1"
-			Width="370">
-            <ComboBox.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding OptionName}" />
-                </DataTemplate>
-            </ComboBox.ItemTemplate>
-        </ComboBox>
-
-
-        <Button Content="Buscar" Command="{Binding Buscar}" Margin="0,20" />
+        <TextBlock Text="Buscar Factura" FontSize="20" FontWeight="Bold" Margin="10,0,0,10" />
+        <CheckBox x:Name="OptionsAllCheckBox" Content="Buscar por:" IsThreeState="True"
+              Checked="SelectAll_Checked" Unchecked="SelectAll_Unchecked"
+              Indeterminate="SelectAll_Indeterminate" Margin="10,0,0,0"/>
+        <CheckBox 
+            x:Name="DateOptionCheckBox" 
+            Content="Mes de Emicion" 
+            Margin="24,0,0,0" 
+            Checked="Option_Checked" 
+            Unchecked="Option_Unchecked" />
+        <CheckBox 
+            x:Name="RfcOptionCheckBox" 
+            Content="RFC de Emicion" 
+            Margin="24,0,0,0" 
+            Checked="Option_Checked" 
+            Unchecked="Option_Unchecked" />
+        
+        <!--Date Picker-->
+        <DatePicker 
+            x:Name="DatePickerControl" 
+            Margin="10,10,0,0" 
+            Width="300" 
+            IsEnabled="False" 
+            YearVisible="True" 
+            MonthVisible="True" 
+            DayVisible="False" />
+        <!--RFC Input-->
+        <TextBox 
+            x:Name="RfcTextBox" 
+            Margin="10,10,0,0" 
+            Width="300" 
+            IsEnabled="False" 
+            PlaceholderText="Ingrese RFC"
+            HorizontalAlignment="Left"
+            MaxLength="13"
+            CharacterCasing="Upper"/>
+        <Button 
+            Style="{StaticResource AccentButtonStyle}" 
+            Content="Buscar"  
+            Margin="10,20" 
+            HorizontalAlignment="Center"/>
     </StackPanel>
 </Page>
