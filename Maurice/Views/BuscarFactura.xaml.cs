@@ -1,4 +1,5 @@
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using System;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -14,19 +15,18 @@ public sealed partial class BuscarFactura
     public BuscarFactura()
     {
         InitializeComponent();
-        DatePickerControl.MinYear = new DateTimeOffset(new DateTime(2000, 1, 1));
-        DatePickerControl.MaxYear = DateTimeOffset.Now;
+        PopulateYears();
     }
     private void SelectAll_Checked(object sender, RoutedEventArgs e)
     {
         DateOptionCheckBox.IsChecked = RfcOptionCheckBox.IsChecked = true;
-        DatePickerControl.IsEnabled = RfcTextBox.IsEnabled = true;
+        MonthComboBox.IsEnabled = YearComboBox.IsEnabled = RfcTextBox.IsEnabled = true;
     }
 
     private void SelectAll_Unchecked(object sender, RoutedEventArgs e)
     {
         DateOptionCheckBox.IsChecked = RfcOptionCheckBox.IsChecked = false;
-        DatePickerControl.IsEnabled = RfcTextBox.IsEnabled = false;
+        MonthComboBox.IsEnabled = YearComboBox.IsEnabled = RfcTextBox.IsEnabled = false;
     }
 
     private void SelectAll_Indeterminate(object sender, RoutedEventArgs e)
@@ -76,7 +76,7 @@ public sealed partial class BuscarFactura
 
         if (sender == DateOptionCheckBox)
         {
-            DatePickerControl.IsEnabled = true;
+            MonthComboBox.IsEnabled = YearComboBox.IsEnabled = true;
         }
         else if (sender == RfcOptionCheckBox)
         {
@@ -90,11 +90,33 @@ public sealed partial class BuscarFactura
 
         if (sender == DateOptionCheckBox)
         {
-            DatePickerControl.IsEnabled = false;
+            MonthComboBox.IsEnabled = YearComboBox.IsEnabled = false;
         }
         else if (sender == RfcOptionCheckBox)
         {
             RfcTextBox.IsEnabled = false;
         }
+    }
+
+    private void PopulateYears()
+    {
+        int currentYear = DateTime.Now.Year;
+        for (int year = currentYear; year >= currentYear - 10; year--)
+        {
+            YearComboBox.Items.Add(year.ToString());
+        }
+    }
+
+    // Get selected date
+    private DateTime? GetSelectedDate()
+    {
+        if (MonthComboBox.SelectedItem is ComboBoxItem monthItem &&
+            YearComboBox.SelectedItem is string yearText &&
+            int.TryParse(yearText, out int year) &&
+            int.TryParse(monthItem.Tag.ToString(), out int month))
+        {
+            return new DateTime(year, month, 1);
+        }
+        return null;
     }
 }

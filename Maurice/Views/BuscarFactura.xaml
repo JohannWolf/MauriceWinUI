@@ -7,50 +7,136 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Width="400"
+    Width="500"
     Height="350">
 
-    <StackPanel Margin="15">
-        <TextBlock Text="Buscar Factura" FontSize="20" FontWeight="Bold" Margin="10,0,0,10" />
-        <CheckBox x:Name="OptionsAllCheckBox" Content="Buscar por:" IsThreeState="True"
-              Checked="SelectAll_Checked" Unchecked="SelectAll_Unchecked"
-              Indeterminate="SelectAll_Indeterminate" Margin="10,0,0,0"/>
+    <Grid 
+        HorizontalAlignment="Center">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="150"/>
+            <ColumnDefinition Width="125"/>
+            <ColumnDefinition Width="125"/>
+            <ColumnDefinition Width="100"/>
+        </Grid.ColumnDefinitions>
+        
+        <TextBlock 
+            Text="Buscar Factura" 
+            FontSize="20" 
+            FontWeight="Bold" 
+            Margin="10,0,0,10" 
+            Grid.Row="0"
+            Grid.ColumnSpan="3"
+            HorizontalAlignment="Center"/>
+        <CheckBox 
+            x:Name="OptionsAllCheckBox" 
+            Content="Buscar por:" 
+            IsThreeState="True"
+            Checked="SelectAll_Checked" 
+            Unchecked="SelectAll_Unchecked"
+            Indeterminate="SelectAll_Indeterminate" 
+            Margin="10,0,0,0"
+            Grid.Row="1"
+            Grid.Column="0"/>
         <CheckBox 
             x:Name="DateOptionCheckBox" 
-            Content="Mes de Emicion" 
+            Content="Fecha" 
             Margin="24,0,0,0" 
             Checked="Option_Checked" 
-            Unchecked="Option_Unchecked" />
+            Unchecked="Option_Unchecked" 
+            Grid.Row="2"
+            Grid.Column="0"/>
         <CheckBox 
             x:Name="RfcOptionCheckBox" 
             Content="RFC de Emicion" 
             Margin="24,0,0,0" 
             Checked="Option_Checked" 
-            Unchecked="Option_Unchecked" />
+            Unchecked="Option_Unchecked" 
+            Grid.Row="3"
+            Grid.Column="0"/>
         
         <!--Date Picker-->
-        <DatePicker 
-            x:Name="DatePickerControl" 
-            Margin="10,10,0,0" 
-            Width="300" 
-            IsEnabled="False" 
-            YearVisible="True" 
-            MonthVisible="True" 
-            DayVisible="False" />
+        <ComboBox 
+            x:Name="MonthComboBox" 
+            Width="100" 
+            Margin="20,0,0,0"
+            Grid.Column="1"
+            Grid.Row="2"
+            PlaceholderText="Mes">
+            <ComboBoxItem Content="Enero" Tag="1"/>
+            <ComboBoxItem Content="Febrero" Tag="2"/>
+            <ComboBoxItem Content="Marzo" Tag="3"/>
+            <ComboBoxItem Content="Abril" Tag="4"/>
+            <ComboBoxItem Content="Mayo" Tag="5"/>
+            <ComboBoxItem Content="Junio" Tag="6"/>
+            <ComboBoxItem Content="Julio" Tag="7"/>
+            <ComboBoxItem Content="Agosto" Tag="8"/>
+            <ComboBoxItem Content="Septiembre" Tag="9"/>
+            <ComboBoxItem Content="Octubre" Tag="10"/>
+            <ComboBoxItem Content="Noviembre" Tag="11"/>
+            <ComboBoxItem Content="Diciembre" Tag="12"/>
+        </ComboBox>
+
+        <ComboBox 
+            x:Name="YearComboBox" 
+            Width="100" 
+            Margin="20,0,0,0"
+            Grid.Column="2"
+            Grid.Row="2"
+            PlaceholderText="Año">
+            <!-- Populate years dynamically in code-behind -->
+        </ComboBox>
         <!--RFC Input-->
         <TextBox 
             x:Name="RfcTextBox" 
-            Margin="10,10,0,0" 
-            Width="300" 
+            Margin="20,10,0,0" 
+            Width="230" 
             IsEnabled="False" 
             PlaceholderText="Ingrese RFC"
             HorizontalAlignment="Left"
             MaxLength="13"
-            CharacterCasing="Upper"/>
+            CharacterCasing="Upper"
+            Grid.Row="3"
+            Grid.Column="1"
+            Grid.ColumnSpan="2"/>
         <Button 
             Style="{StaticResource AccentButtonStyle}" 
             Content="Buscar"  
             Margin="10,20" 
-            HorizontalAlignment="Center"/>
-    </StackPanel>
+            HorizontalAlignment="Center"
+            Grid.Row="2"
+            Grid.RowSpan="2"
+            Grid.Column="3"/>
+        
+        <ListView 
+            ItemsSource="{Binding TestData}"
+            Margin="0,20,0,0"
+            Grid.Row="4"
+            Grid.Column="0"
+            Grid.ColumnSpan="4"
+            MaxHeight="400"
+            Header="test">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding UUID}" FontWeight="Bold" />
+                        <TextBox Text="Ver" 
+                         Grid.Column="1"
+                         IsReadOnly="True"
+                         BorderThickness="0"/>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
 </Page>
