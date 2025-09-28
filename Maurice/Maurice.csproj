@@ -50,6 +50,11 @@
     <ProjectReference Include="..\Maurice.Core\Maurice.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Page Update="Views\ReporteMensual.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
     <Page Update="Views\XmlPreviewDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

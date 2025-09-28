@@ -57,6 +57,7 @@ namespace Maurice
                 "BuscarFactura" => typeof(BuscarFactura),
                 "AgregarFactura" => typeof(AgregarFactura),
                 "Configuracion" => typeof(Configuracion),
+                "ReporteMensual" => typeof(ReporteMensual),
                 _ => null
             };
         }

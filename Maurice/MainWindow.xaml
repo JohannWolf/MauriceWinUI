@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:views="using:Maurice.Views"
     mc:Ignorable="d"
     Title="Maurice"
     x:Name="RootWindow">
@@ -13,21 +14,69 @@
         <MicaBackdrop />
     </Window.SystemBackdrop>
 
-    <NavigationView x:Name="NavView"
-                    IsSettingsVisible="false"
-                    Loaded="NavView_Loaded"
-                    ItemInvoked="NavView_ItemInvoked">
+    <NavigationView 
+        x:Name="NavView"
+        IsSettingsVisible="false"
+        Loaded="NavView_Loaded"
+        ItemInvoked="NavView_ItemInvoked">
+
         <NavigationView.MenuItems>
-            <NavigationViewItem Content="Facturas" Icon="Page2" ToolTipService.ToolTip="Facturas" SelectsOnInvoked="False">
+            <NavigationViewItem 
+                Content="Facturas" 
+                Icon="Page2" 
+                ToolTipService.ToolTip="Gestionar facturas" 
+                SelectsOnInvoked="False">
+
                 <NavigationViewItem.MenuItems>
-                    <NavigationViewItem Content="Buscar Factura" Icon="Find" Tag="BuscarFactura"/>
-                    <NavigationViewItem Content="Agregar Factura" Icon="NewFolder" Tag="AgregarFactura"/>
+                    <NavigationViewItem 
+                        Content="Buscar Factura" 
+                        Icon="Find" 
+                        Tag="BuscarFactura"
+                        ToolTipService.ToolTip="Buscar facturas existentes"/>
+
+                    <NavigationViewItem 
+                        Content="Agregar Factura" 
+                        Icon="Add" 
+                        Tag="AgregarFactura"
+                        ToolTipService.ToolTip="Agregar nueva factura"/>
+                </NavigationViewItem.MenuItems>
+            </NavigationViewItem>
+
+            <NavigationViewItem 
+                Content="Reportes" 
+                Icon="View" 
+                ToolTipService.ToolTip="Reportes" 
+                SelectsOnInvoked="False">
+
+                    <NavigationViewItem.MenuItems>
+                    <NavigationViewItem 
+                        Content="Mensual" 
+                        Icon="CalendarWeek" 
+                        Tag="ReporteMensual"
+                        ToolTipService.ToolTip="Reporte Mensual"/>
+
+                    <NavigationViewItem 
+                        Content="Anual" 
+                        Icon="Calendar" 
+                        Tag="ReporteAnual"
+                        ToolTipService.ToolTip="Reporte Anual"/>
                 </NavigationViewItem.MenuItems>
             </NavigationViewItem>
         </NavigationView.MenuItems>
+
         <NavigationView.FooterMenuItems>
-            <NavigationViewItem Content="Configuracion" Icon="Setting" ToolTipService.ToolTip="Configuracion" Tag="Configuracion"/>
+            <NavigationViewItem 
+                Content="Configuracion" 
+                Icon="Setting" 
+                Tag="Configuracion"
+                ToolTipService.ToolTip="Configuración de la aplicación"/>
         </NavigationView.FooterMenuItems>
-        <Frame x:Name="contentFrame"/>
+
+        <Frame x:Name="contentFrame">
+            <!-- Optional: Set default content -->
+            <Frame.Content>
+                <views:BuscarFactura />
+            </Frame.Content>
+        </Frame>
     </NavigationView>
 </Window>

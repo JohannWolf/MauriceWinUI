@@ -1,6 +1,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
+using Maurice.Core;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -12,10 +13,14 @@ namespace Maurice.Views;
 /// </summary>
 public sealed partial class BuscarFactura
 {
+    public BuscarFacturaViewModel ViewModel { get; }
+
     public BuscarFactura()
     {
         InitializeComponent();
         PopulateYears();
+        ViewModel = new BuscarFacturaViewModel();    
+        DataContext = ViewModel;
     }
     private void SelectAll_Checked(object sender, RoutedEventArgs e)
     {
