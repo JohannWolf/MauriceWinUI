@@ -34,7 +34,7 @@ namespace Maurice
             // If navigation occurs on SelectionChanged, this isn't needed.
             // Because we use ItemInvoked to navigate, we need to call Navigate
             // here to load the home page.
-            NavView_Navigate(typeof(Configuracion), new EntranceNavigationTransitionInfo());
+            NavView_Navigate(typeof(BuscarFactura), new EntranceNavigationTransitionInfo());
         }
         private void NavView_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
         {
@@ -58,6 +58,7 @@ namespace Maurice
                 "AgregarFactura" => typeof(AgregarFactura),
                 "Configuracion" => typeof(Configuracion),
                 "ReporteMensual" => typeof(ReporteMensual),
+                "ReporteAnual" => typeof(ReporteAnual),
                 _ => null
             };
         }

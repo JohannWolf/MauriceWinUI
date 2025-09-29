@@ -69,14 +69,10 @@
                 Content="Configuracion" 
                 Icon="Setting" 
                 Tag="Configuracion"
-                ToolTipService.ToolTip="Configuración de la aplicación"/>
+                ToolTipService.ToolTip="Configuraciï¿½n de la aplicaciï¿½n"/>
         </NavigationView.FooterMenuItems>
 
         <Frame x:Name="contentFrame">
-            <!-- Optional: Set default content -->
-            <Frame.Content>
-                <views:BuscarFactura />
-            </Frame.Content>
         </Frame>
     </NavigationView>
 </Window>
