@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Maurice.Data.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,6 @@ namespace Maurice.Core.Services
 {
     public interface IFileService
     {
-        public Task<IDictionary<string, string>> ProcessXmlFileAsync(StorageFile file);
+        public Task<Comprobante> ProcessXmlFileAsync(StorageFile file);
     }
 }

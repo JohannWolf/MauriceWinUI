@@ -2,82 +2,133 @@
 using CommunityToolkit.Mvvm.Input;
 using Maurice.Core.Models;
 using Maurice.Core.Services;
+using Maurice.Data.Models;
 using Microsoft.UI.Xaml.Controls;
 using Windows.Storage;
 
 namespace Maurice.Core
 {
-    public partial class AgregarFacturaViewModel: ObservableObject
+    public partial class AgregarFacturaViewModel : ObservableObject
     {
         private readonly IFileService _fileService;
 
-        // Add constructor that accepts IFileService
         public AgregarFacturaViewModel(IFileService fileService)
         {
             _fileService = fileService;
         }
 
         [ObservableProperty]
-        private string _statusMessage = "Bienvenido";
+        private string _statusMessage = "Arrastra o selecciona archivos XML";
+
+        [ObservableProperty]
+        private Comprobante _currentComprobante;
+
         // Event to request dialog show from View
-        public event Func<List<XmlEntry>, Task<ContentDialogResult>> ShowPreviewRequested;
+        public event Func<ComprobanteDisplay, Task<ContentDialogResult>> ShowPreviewRequested;
 
         [RelayCommand]
         public async Task ProcessXmlFileAsync(StorageFile file)
         {
             try
             {
-                StatusMessage = "Processing file...";
+                StatusMessage = "Procesando archivo...";
 
-                // Process XML (delegates to specialized method)
-                var result = await _fileService.ProcessXmlFileAsync(file);
+                // Process XML - now returns Comprobante instead of Dictionary
+                var comprobante = await _fileService.ProcessXmlFileAsync(file);
 
-                if(result is not null && result.Count > 0)
+                if (comprobante != null)
                 {
-                    var previewData = result.Select(kv => new XmlEntry
-                    {
-                        Key = kv.Key,
-                        Value = kv.Value
-                    }).ToList();
+                    // Store the current comprobante
+                    CurrentComprobante = comprobante;
+                    var displayModel = comprobante.ToDisplayModel(); // Use extension method
 
                     // Show dialog via event
                     if (ShowPreviewRequested != null)
                     {
-                        var dialogResult = await ShowPreviewRequested(previewData);
+                        var dialogResult = await ShowPreviewRequested(displayModel);
 
                         if (dialogResult == ContentDialogResult.Primary)
                         {
-                            await SaveDataAsync(previewData);
-                            StatusMessage = $"Archivo procesado: {file.Name}";
+                            await SaveDataAsync(comprobante);
+                            StatusMessage = GetSuccessMessage(comprobante);
                         }
                         else
                         {
                             StatusMessage = "Operación cancelada";
+                            CurrentComprobante = null;
                         }
                     }
                     else
                     {
                         // Fallback: auto-save if no event handler
-                        await SaveDataAsync(previewData);
-                        StatusMessage = $"Archivo procesado: {file.Name}";
+                        await SaveDataAsync(comprobante);
+                        StatusMessage = GetSuccessMessage(comprobante);
                     }
-                } else
-                {
-                    StatusMessage = "No data found in XML.";
                 }
-                StatusMessage = $"Processed: {file.Name}";
+                else
+                {
+                    StatusMessage = "No se pudo procesar el archivo XML";
+                }
             }
             catch (Exception ex)
             {
                 StatusMessage = $"Error: {ex.Message}";
+                CurrentComprobante = null;
             }
         }
 
-        private async Task SaveDataAsync(List<XmlEntry> data)
+        private async Task SaveDataAsync(Comprobante comprobante)
         {
-            // Your save logic here
-            // This could save to database, file, etc.
-            await Task.Delay(500); // Simulate save operation
+            try
+            {
+                // TODO: Implement your save logic here
+                // This could save to database, file system, etc.
+
+                if (comprobante is Factura factura)
+                {
+                    // Save factura specific data
+                    await SaveFacturaAsync(factura);
+                }
+                else if (comprobante is Nomina nomina)
+                {
+                    // Save nomina specific data
+                    await SaveNominaAsync(nomina);
+                }
+
+                // Clear current comprobante after successful save
+                CurrentComprobante = null;
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"Error al guardar: {ex.Message}";
+                throw;
+            }
+        }
+
+        private async Task SaveFacturaAsync(Factura factura)
+        {
+            // Your factura save logic here
+            await Task.Delay(100); // Simulate save operation
+        }
+
+        private async Task SaveNominaAsync(Nomina nomina)
+        {
+            // Your nomina save logic here
+            await Task.Delay(100); // Simulate save operation
+        }
+
+        private string GetSuccessMessage(Comprobante comprobante)
+        {
+            if (comprobante is Factura factura)
+            {
+                return $"Factura {factura.Folio} guardada correctamente - Total: {factura.Total:C}";
+            }
+            else if (comprobante is Nomina nomina)
+            {
+                return $"Nómina {nomina.Folio} guardada correctamente - Neto: {nomina.GetNetoAPagar():C}";
+            }
+
+            return $"Documento {comprobante.Folio} guardado correctamente";
         }
     }
 }

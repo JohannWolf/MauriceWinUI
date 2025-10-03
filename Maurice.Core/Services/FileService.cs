@@ -1,19 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 using Windows.Storage;
+using Maurice.Data.Models;
 
 namespace Maurice.Core.Services
 {
     public class FileService : IFileService
     {
-        public async Task<IDictionary<string, string>> ProcessXmlFileAsync(StorageFile file)
+        public async Task<Comprobante> ProcessXmlFileAsync(StorageFile file)
         {
-            var result = new Dictionary<string, string>();
-
             try
             {
                 // Read the XML content as a string
@@ -22,98 +18,168 @@ namespace Maurice.Core.Services
                 // Parse the XML content using XDocument
                 XDocument doc = XDocument.Parse(xmlContent);
 
-                // Extract data
+                // Extract data and create appropriate model
                 var comprobante = doc.Root;
                 if (comprobante != null)
                 {
-                    result["Tipo de Documento"] = TipoDeDocumento(comprobante);
-                    result["Folio"] = comprobante.Attribute("Folio")?.Value;
-                    result["Fecha"] = comprobante.Attribute("Fecha")?.Value;
+                    var documentType = TipoDeDocumento(comprobante);
 
-                    var complemento = comprobante.Element(XName.Get("Complemento", "http://www.sat.gob.mx/cfd/4"));
-                    if (complemento != null)
+                    if (documentType == "Nomina")
                     {
-                        var timbreFiscalDigital = complemento.Element(XName.Get("TimbreFiscalDigital", "http://www.sat.gob.mx/TimbreFiscalDigital")); if (timbreFiscalDigital != null)
-                            result["UUID"] = timbreFiscalDigital.Attribute("UUID")?.Value ?? "NA"; // Default value for UUID
+                        return CreateNominaFromXml(comprobante, file.Name);
                     }
-
-                    var emisor = comprobante.Element(XName.Get("Emisor", "http://www.sat.gob.mx/cfd/4"));
-                    if (emisor != null)
+                    else
                     {
-                        result["RFC Emisor"] = emisor.Attribute("Rfc")?.Value;
-                        result["Nombre de Emisor"] = emisor.Attribute("Nombre")?.Value;
+                        return CreateFacturaFromXml(comprobante, file.Name);
                     }
-
-                    var receptor = comprobante.Element(XName.Get("Receptor", "http://www.sat.gob.mx/cfd/4"));
-                    if (receptor != null)
-                    {
-                        result["RFC Receptor"] = receptor.Attribute("Rfc")?.Value;
-                    }
-                    //Datos de Facturas
-                    var concepto = comprobante.Descendants(XName.Get("Concepto", "http://www.sat.gob.mx/cfd/4")).FirstOrDefault();
-                    if (concepto != null)
-                    {
-                        var value = concepto.Attribute("ClaveProdServ")?.Value;
-
-                        if (value == "85121600")
-                        {
-                            result["Descripcion"] = "Honorarios medicos y gastos hospitalarios";
-                        }
-                    }
-
-                    var impuestos = comprobante.Element(XName.Get("Impuestos", "http://www.sat.gob.mx/cfd/4"));
-                    if (impuestos != null)
-                    {
-                        var traslado = impuestos.Descendants(XName.Get("Traslado", "http://www.sat.gob.mx/cfd/4")).FirstOrDefault();
-                        if (traslado != null)
-                        {
-                            result["Base"] = traslado.Attribute("Base")?.Value ?? "0.00"; // Default value for Base
-                            result["Tasa"] = traslado.Attribute("TasaOCuota")?.Value ?? "Excento";
-                            result["Importe de impuesto"] = traslado.Attribute("Importe")?.Value ?? "0.00"; // Default value for Importe
-                        }
-                    }
-
-                    //Datos Nominas
-                    if(result["Tipo de Documento"] == "Nomina")
-                    {
-                        var complementoNomina = complemento.Element(XName.Get("Nomina", "http://www.sat.gob.mx/nomina12"));
-                        if (complementoNomina != null)
-                        {
-                            var percepciones = complementoNomina.Element(XName.Get("Percepciones", "http://www.sat.gob.mx/nomina12"));
-                            if (percepciones != null)
-                            {
-                                result["Percepciones"] = percepciones.Attribute("TotalGravado")?.Value;
-                                result["Percepciones Exentas"] = percepciones.Attribute("TotalExento")?.Value;
-                            }
-                            var deducciones = complementoNomina.Element(XName.Get("Deducciones", "http://www.sat.gob.mx/nomina12"));
-                            if (deducciones != null)
-                            {
-                                result["Deducciones"] = deducciones.Attribute("TotalImpuestosRetenidos")?.Value;
-                                result["Otros Descuentos"] = deducciones.Attribute("TotalOtrasDeducciones")?.Value;
-                            }
-                            result["Total de Percepciones"] = comprobante.Attribute("SubTotal")?.Value;
-                            result["Total de Deducciones"] = comprobante.Attribute("Descuento")?.Value;
-                        }
-                    }
-
-                    result["Total Pagado"] = comprobante.Attribute("Total")?.Value;
                 }
 
-                return result;
+                return null;
             }
             catch (Exception ex)
             {
-                // Handle exceptions (e.g., log them)
                 throw new ApplicationException("Error processing XML file", ex);
             }
         }
 
+        private Factura CreateFacturaFromXml(XElement comprobante, string fileName)
+        {
+            var factura = new Factura
+            {
+                TipoDeDocumento = "Factura",
+                Folio = comprobante.Attribute("Folio")?.Value,
+                Fecha = ParseDateTime(comprobante.Attribute("Fecha")?.Value),
+                SubTotal = ParseDecimal(comprobante.Attribute("SubTotal")?.Value),
+                Descuento = ParseDecimal(comprobante.Attribute("Descuento")?.Value),
+                Total = ParseDecimal(comprobante.Attribute("Total")?.Value),
+                FileName = fileName
+            };
+
+            var complemento = comprobante.Element(XName.Get("Complemento", "http://www.sat.gob.mx/cfd/4"));
+            if (complemento != null)
+            {
+                var timbreFiscalDigital = complemento.Element(XName.Get("TimbreFiscalDigital", "http://www.sat.gob.mx/TimbreFiscalDigital"));
+                if (timbreFiscalDigital != null)
+                    factura.UUID = timbreFiscalDigital.Attribute("UUID")?.Value ?? "NA";
+            }
+
+            var emisor = comprobante.Element(XName.Get("Emisor", "http://www.sat.gob.mx/cfd/4"));
+            if (emisor != null)
+            {
+                factura.RfcEmisor = emisor.Attribute("Rfc")?.Value;
+                factura.NombreEmisor = emisor.Attribute("Nombre")?.Value;
+            }
+
+            var receptor = comprobante.Element(XName.Get("Receptor", "http://www.sat.gob.mx/cfd/4"));
+            if (receptor != null)
+            {
+                factura.RfcReceptor = receptor.Attribute("Rfc")?.Value;
+            }
+
+            // Datos de Facturas
+            var concepto = comprobante.Descendants(XName.Get("Concepto", "http://www.sat.gob.mx/cfd/4")).FirstOrDefault();
+            if (concepto != null)
+            {
+                var value = concepto.Attribute("ClaveProdServ")?.Value;
+                factura.ClaveProdServ = value;
+
+                if (value == "85121600")
+                {
+                    factura.Descripcion = "Honorarios medicos y gastos hospitalarios";
+                }
+            }
+
+            var impuestos = comprobante.Element(XName.Get("Impuestos", "http://www.sat.gob.mx/cfd/4"));
+            if (impuestos != null)
+            {
+                var traslado = impuestos.Descendants(XName.Get("Traslado", "http://www.sat.gob.mx/cfd/4")).FirstOrDefault();
+                if (traslado != null)
+                {
+                    factura.Base = ParseDecimal(traslado.Attribute("Base")?.Value ?? "0.00");
+                    factura.Tasa = traslado.Attribute("TasaOCuota")?.Value ?? "Excento";
+                    factura.ImporteImpuesto = ParseDecimal(traslado.Attribute("Importe")?.Value ?? "0.00");
+                }
+            }
+
+            return factura;
+        }
+
+        private Nomina CreateNominaFromXml(XElement comprobante, string fileName)
+        {
+            var nomina = new Nomina
+            {
+                TipoDeDocumento = "Nomina",
+                Folio = comprobante.Attribute("Folio")?.Value,
+                Fecha = ParseDateTime(comprobante.Attribute("Fecha")?.Value),
+                SubTotal = ParseDecimal(comprobante.Attribute("SubTotal")?.Value),
+                Descuento = ParseDecimal(comprobante.Attribute("Descuento")?.Value),
+                Total = ParseDecimal(comprobante.Attribute("Total")?.Value),
+                FileName = fileName
+            };
+
+            var complemento = comprobante.Element(XName.Get("Complemento", "http://www.sat.gob.mx/cfd/4"));
+            if (complemento != null)
+            {
+                var timbreFiscalDigital = complemento.Element(XName.Get("TimbreFiscalDigital", "http://www.sat.gob.mx/TimbreFiscalDigital"));
+                if (timbreFiscalDigital != null)
+                    nomina.UUID = timbreFiscalDigital.Attribute("UUID")?.Value ?? "NA";
+
+                // Datos Nominas
+                var complementoNomina = complemento.Element(XName.Get("Nomina", "http://www.sat.gob.mx/nomina12"));
+                if (complementoNomina != null)
+                {
+                    var percepciones = complementoNomina.Element(XName.Get("Percepciones", "http://www.sat.gob.mx/nomina12"));
+                    if (percepciones != null)
+                    {
+                        nomina.TotalGravado = ParseDecimal(percepciones.Attribute("TotalGravado")?.Value);
+                        nomina.TotalExento = ParseDecimal(percepciones.Attribute("TotalExento")?.Value);
+                    }
+
+                    var deducciones = complementoNomina.Element(XName.Get("Deducciones", "http://www.sat.gob.mx/nomina12"));
+                    if (deducciones != null)
+                    {
+                        nomina.TotalImpuestosRetenidos = ParseDecimal(deducciones.Attribute("TotalImpuestosRetenidos")?.Value);
+                        nomina.TotalOtrasDeducciones = ParseDecimal(deducciones.Attribute("TotalOtrasDeducciones")?.Value);
+                    }
+
+                    nomina.TotalPercepciones = nomina.SubTotal;
+                    nomina.TotalDeducciones = nomina.Descuento;
+                }
+            }
+
+            var emisor = comprobante.Element(XName.Get("Emisor", "http://www.sat.gob.mx/cfd/4"));
+            if (emisor != null)
+            {
+                nomina.RfcEmisor = emisor.Attribute("Rfc")?.Value;
+                nomina.NombreEmisor = emisor.Attribute("Nombre")?.Value;
+            }
+
+            var receptor = comprobante.Element(XName.Get("Receptor", "http://www.sat.gob.mx/cfd/4"));
+            if (receptor != null)
+            {
+                nomina.RfcReceptor = receptor.Attribute("Rfc")?.Value;
+            }
+
+            return nomina;
+        }
+
         private string TipoDeDocumento(XElement comprobante)
         {
-            string result = comprobante.Attribute("TipoDeComprobante")?.Value == "N" ? "Nomina" :
-                "Factura";
-            //Implementae logica por ingreso o egreso
-            return result;
+            return comprobante.Attribute("TipoDeComprobante")?.Value == "N" ? "Nomina" : "Factura";
+        }
+
+        private DateTime? ParseDateTime(string dateString)
+        {
+            if (DateTime.TryParse(dateString, out DateTime result))
+                return result;
+            return null;
+        }
+
+        private decimal ParseDecimal(string decimalString)
+        {
+            if (decimal.TryParse(decimalString, out decimal result))
+                return result;
+            return 0m;
         }
     }
 }

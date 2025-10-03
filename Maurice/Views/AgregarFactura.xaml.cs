@@ -159,19 +159,20 @@ namespace Maurice.Views
             StatusText.Text = "Archivos procesados correctamente";
         }*/
         /// <summary>
-        /// Displays a preview dialog for the provided XML data and returns the result of the dialog interaction.
+        /// Displays a preview dialog for the specified display data and returns the result of the dialog interaction.
         /// </summary>
-        /// <remarks>The dialog is displayed asynchronously and is bound to the provided XML data via its
-        /// <see cref="DataContext"/> property. Ensure that the <paramref name="data"/> parameter is not null and
-        /// contains valid entries to avoid unexpected behavior.</remarks>
-        /// <param name="data">A list of <see cref="XmlEntry"/> objects representing the XML data to be displayed in the dialog.</param>
-        /// <returns>A <see cref="ContentDialogResult"/> indicating the result of the dialog interaction. Possible values include
+        /// <remarks>The method initializes an instance of <see cref="XmlPreviewDialog"/>, sets its data
+        /// context to the provided display data, and displays the dialog asynchronously. Ensure that the <paramref
+        /// name="displayData"/> parameter is properly populated before calling this method.</remarks>
+        /// <param name="displayData">The data to be displayed in the preview dialog. This must be an instance of <see cref="ComprobanteDisplay"/>
+        /// containing the relevant information.</param>
+        /// <returns>A <see cref="ContentDialogResult"/> indicating the result of the dialog interaction. Possible values are
         /// <see cref="ContentDialogResult.Primary"/>, <see cref="ContentDialogResult.Secondary"/>, or <see
         /// cref="ContentDialogResult.None"/>.</returns>
-        private async Task<ContentDialogResult> ShowPreviewDialogHandler(List<XmlEntry> data)
+        private async Task<ContentDialogResult> ShowPreviewDialogHandler(ComprobanteDisplay displayData)
         {
             var dialog = new XmlPreviewDialog();
-            dialog.DataContext = new { XmlData = data };
+            dialog.DataContext = displayData; // Directly pass the display model
             dialog.XamlRoot = this.XamlRoot;
 
             return await dialog.ShowAsync();

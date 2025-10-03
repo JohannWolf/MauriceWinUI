@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Width="500"
-    Height="350">
+    Height="450">
 
     <Grid 
         HorizontalAlignment="Center">
@@ -122,7 +122,7 @@
             Grid.Row="4"
             Grid.Column="0"
             Grid.ColumnSpan="4"
-            MaxHeight="400">
+            MaxHeight="300">
 
             <ListView.Header>
                 <Grid Background="{ThemeResource SubtleFillColorSecondaryBrush}" Padding="12">
@@ -133,11 +133,11 @@
                         <ColumnDefinition Width="80"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="UUID" FontWeight="Bold"/>
+                    <TextBlock Text="RFC" FontWeight="Bold"/>
                     <TextBlock Text="Folio" FontWeight="Bold" Grid.Column="1"/>
                     <TextBlock Text="Fecha" FontWeight="Bold" Grid.Column="2"/>
                     <TextBlock Text="Total" FontWeight="Bold" Grid.Column="3"/>
-                    <TextBlock Text="Estado" FontWeight="Bold" Grid.Column="4"/>
+                    <TextBlock Text="Impuesto" FontWeight="Bold" Grid.Column="4"/>
                 </Grid>
             </ListView.Header>
 
@@ -152,11 +152,11 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Text="{Binding UUID}" FontWeight="SemiBold"/>
+                        <TextBlock Text="{Binding RfcEmisor}" FontWeight="SemiBold"/>
                         <TextBlock Text="{Binding Folio}" Grid.Column="1"/>
                         <TextBlock Text="{Binding Date}" Grid.Column="2"/>
                         <TextBlock Text="{Binding Total}" Grid.Column="3"/>
-                        <TextBlock Text="{Binding Status}" Grid.Column="4"/>
+                        <TextBlock Text="{Binding Impuesto}" Grid.Column="4"/>
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>

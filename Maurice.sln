@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Maurice", "Maurice\Maurice.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Maurice.Core", "Maurice.Core\Maurice.Core.csproj", "{69634FF2-95A7-436B-B741-A45344DF71F7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Maurice.Data", "Maurice.Data\Maurice.Data.csproj", "{3BD8F7D4-F8C3-4003-AD48-50878035E950}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM64 = Debug|ARM64
@@ -47,6 +49,18 @@ Global
 		{69634FF2-95A7-436B-B741-A45344DF71F7}.Release|x64.Build.0 = Release|Any CPU
 		{69634FF2-95A7-436B-B741-A45344DF71F7}.Release|x86.ActiveCfg = Release|Any CPU
 		{69634FF2-95A7-436B-B741-A45344DF71F7}.Release|x86.Build.0 = Release|Any CPU
+		{3BD8F7D4-F8C3-4003-AD48-50878035E950}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{3BD8F7D4-F8C3-4003-AD48-50878035E950}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{3BD8F7D4-F8C3-4003-AD48-50878035E950}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{3BD8F7D4-F8C3-4003-AD48-50878035E950}.Debug|x64.Build.0 = Debug|Any CPU
+		{3BD8F7D4-F8C3-4003-AD48-50878035E950}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3BD8F7D4-F8C3-4003-AD48-50878035E950}.Debug|x86.Build.0 = Debug|Any CPU
+		{3BD8F7D4-F8C3-4003-AD48-50878035E950}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{3BD8F7D4-F8C3-4003-AD48-50878035E950}.Release|ARM64.Build.0 = Release|Any CPU
+		{3BD8F7D4-F8C3-4003-AD48-50878035E950}.Release|x64.ActiveCfg = Release|Any CPU
+		{3BD8F7D4-F8C3-4003-AD48-50878035E950}.Release|x64.Build.0 = Release|Any CPU
+		{3BD8F7D4-F8C3-4003-AD48-50878035E950}.Release|x86.ActiveCfg = Release|Any CPU
+		{3BD8F7D4-F8C3-4003-AD48-50878035E950}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

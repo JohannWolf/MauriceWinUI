@@ -14,39 +14,32 @@ namespace Maurice.Core
             TestData = new ObservableCollection<Invoice>
             {
                 new Invoice {
-                    UUID = "FAC-001-2024",
+                    RfcEmisor = "FACA010120N01",
                     Folio = "001",
                     Date = new DateTime(2024, 1, 15),
                     Total = 1250.50m,
-                    Status = "Activa"
+                    Impuesto = 150.50m,
                 },
                 new Invoice {
-                    UUID = "FAC-002-2024",
+                    RfcEmisor = "GODE561231GR8",
                     Folio = "002",
-                    Date = new DateTime(2024, 1, 18),
-                    Total = 890.75m,
-                    Status = "Cancelada"
-                },
-                new Invoice {
-                    UUID = "FAC-003-2024",
-                    Folio = "003",
-                    Date = new DateTime(2024, 2, 5),
-                    Total = 2345.00m,
-                    Status = "Activa"
-                },
-                new Invoice {
-                    UUID = "FAC-004-2024",
-                    Folio = "004",
-                    Date = new DateTime(2024, 2, 12),
-                    Total = 567.30m,
-                    Status = "Pendiente"
-                },
-                new Invoice {
-                    UUID = "FAC-005-2024",
-                    Folio = "005",
                     Date = new DateTime(2024, 2, 20),
-                    Total = 1789.45m,
-                    Status = "Activa"
+                    Total = 3000.00m,
+                    Impuesto = 480.00m,
+                },
+                new Invoice {
+                    RfcEmisor = "XEXX010101000",
+                    Folio = "003",
+                    Date = new DateTime(2024, 3, 5),
+                    Total = 750.75m,
+                    Impuesto = 120.75m,
+                },
+                new Invoice {
+                    RfcEmisor = "BADD110",
+                    Folio = "004",
+                    Date = new DateTime(2024, 3, 5),
+                    Total = 750.75m,
+                    Impuesto = 120.75m,
                 }
             };
         }
@@ -55,9 +48,9 @@ namespace Maurice.Core
 
 public class Invoice
 {
-    public string UUID { get; set; }
+    public string RfcEmisor { get; set; }
     public string Folio { get; set; }
     public DateTime Date { get; set; }
     public decimal Total { get; set; }
-    public string Status { get; set; }
+    public decimal Impuesto { get; set; }
 }

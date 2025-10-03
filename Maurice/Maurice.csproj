@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Maurice.Core\Maurice.Core.csproj" />
+    <ProjectReference Include="..\Maurice.Data\Maurice.Data.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Page Update="Views\ReporteAnual.xaml">
