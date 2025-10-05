@@ -1,3 +1,6 @@
+using Maurice.Core;
+using Maurice.Data.Models;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml.Controls;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -10,9 +13,23 @@ namespace Maurice.Views
     /// </summary>
     public sealed partial class Configuracion : Page
     {
+        public ConfiguracionViewModel ViewModel { get; }
         public Configuracion()
         {
             InitializeComponent();
+            ViewModel = App.Services.GetService<ConfiguracionViewModel>();
+            DataContext = ViewModel;
+        }
+
+        public void SaveButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        {
+            var user = new User
+            {
+                FirstName = NameTextBox.Text,
+                LastName = LastNameTextBox.Text,
+                Rfc = RFCTextBox.Text,
+            };
+            _ = ViewModel.SaveUserData(user);
         }
     }
 }

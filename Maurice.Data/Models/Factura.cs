@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Maurice.Data.Models
 {
@@ -13,6 +9,7 @@ namespace Maurice.Data.Models
         public string Descripcion { get; set; }
 
         // Impuestos
+        [Required]
         public decimal Base { get; set; }
         public string Tasa { get; set; }
         public decimal ImporteImpuesto { get; set; }

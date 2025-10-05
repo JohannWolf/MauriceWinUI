@@ -1,24 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Maurice.Data.Models
 {
     public abstract class Comprobante
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+
         // Common fields for all document types
+        [Required]
         public string TipoDeDocumento { get; set; }
+        [Required]
         public string Folio { get; set; }
+        [Required]
         public DateTime? Fecha { get; set; }
+        [Required]
         public string UUID { get; set; }
 
         // Emisor
+        [Required]
+        [MaxLength(13)]
         public string RfcEmisor { get; set; }
         public string NombreEmisor { get; set; }
 
         // Receptor
+        [Required]
+        [MaxLength(13)]
         public string RfcReceptor { get; set; }
 
         // Totales (common to both)

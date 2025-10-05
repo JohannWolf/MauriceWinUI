@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Maurice.Core.Models;
 using Maurice.Core.Services;
+using Maurice.Data;
 using Maurice.Data.Models;
 using Microsoft.UI.Xaml.Controls;
 using Windows.Storage;
@@ -11,10 +12,12 @@ namespace Maurice.Core
     public partial class AgregarFacturaViewModel : ObservableObject
     {
         private readonly IFileService _fileService;
+        private readonly IDatabaseService _databaseService;
 
-        public AgregarFacturaViewModel(IFileService fileService)
+        public AgregarFacturaViewModel(IFileService fileService, IDatabaseService databaseService)
         {
             _fileService = fileService;
+            _databaseService = databaseService;
         }
 
         [ObservableProperty]
@@ -81,21 +84,17 @@ namespace Maurice.Core
         {
             try
             {
-                // TODO: Implement your save logic here
-                // This could save to database, file system, etc.
+                var saved = await _databaseService.SaveComprobanteAsync(comprobante);
 
-                if (comprobante is Factura factura)
+                if (saved)
                 {
-                    // Save factura specific data
-                    await SaveFacturaAsync(factura);
+                    StatusMessage = GetSuccessMessage(comprobante);
                 }
-                else if (comprobante is Nomina nomina)
+                else
                 {
-                    // Save nomina specific data
-                    await SaveNominaAsync(nomina);
+                    StatusMessage = $"El comprobante {comprobante.UUID} ya existe en la base de datos";
                 }
 
-                // Clear current comprobante after successful save
                 CurrentComprobante = null;
             }
             catch (Exception ex)
@@ -103,18 +102,6 @@ namespace Maurice.Core
                 StatusMessage = $"Error al guardar: {ex.Message}";
                 throw;
             }
-        }
-
-        private async Task SaveFacturaAsync(Factura factura)
-        {
-            // Your factura save logic here
-            await Task.Delay(100); // Simulate save operation
-        }
-
-        private async Task SaveNominaAsync(Nomina nomina)
-        {
-            // Your nomina save logic here
-            await Task.Delay(100); // Simulate save operation
         }
 
         private string GetSuccessMessage(Comprobante comprobante)

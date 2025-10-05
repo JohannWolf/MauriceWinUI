@@ -1,0 +1,14 @@
+﻿using Maurice.Data.Models;
+
+namespace Maurice.Data
+{
+    public interface IDatabaseService
+    {
+        Task InitializeDatabaseAsync();
+        Task<bool> SaveComprobanteAsync(Comprobante comprobante);
+        Task<List<Factura>> GetFacturasAsync();
+        Task<List<Nomina>> GetNominasAsync();
+        Task<Comprobante> GetComprobanteByUUIDAsync(string uuid);
+        Task SaveUserAsync(User user);
+    }
+}
