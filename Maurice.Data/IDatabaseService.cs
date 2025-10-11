@@ -10,5 +10,6 @@ namespace Maurice.Data
         Task<List<Nomina>> GetNominasAsync();
         Task<Comprobante> GetComprobanteByUUIDAsync(string uuid);
         Task SaveUserAsync(User user);
+        Task<User> GetUserAsync();
     }
 }

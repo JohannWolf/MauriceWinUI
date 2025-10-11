@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Maurice.Data.Models
 {
-    public class User
+    public partial class User
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

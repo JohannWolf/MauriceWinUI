@@ -2,6 +2,7 @@ using Maurice.Core;
 using Maurice.Data.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -14,6 +15,7 @@ namespace Maurice.Views
     public sealed partial class Configuracion : Page
     {
         public ConfiguracionViewModel ViewModel { get; }
+
         public Configuracion()
         {
             InitializeComponent();
@@ -21,15 +23,10 @@ namespace Maurice.Views
             DataContext = ViewModel;
         }
 
-        public void SaveButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            var user = new User
-            {
-                FirstName = NameTextBox.Text,
-                LastName = LastNameTextBox.Text,
-                Rfc = RFCTextBox.Text,
-            };
-            _ = ViewModel.SaveUserData(user);
+            // Auto-load user data when page is navigated to
+            ViewModel.LoadUserCommand.ExecuteAsync(null);
         }
     }
 }

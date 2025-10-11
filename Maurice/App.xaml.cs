@@ -1,6 +1,8 @@
 ﻿using Maurice.Core;
 using Maurice.Core.Services;
 using Maurice.Data;
+using Maurice.Data.Context;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using System;
@@ -34,7 +36,15 @@ namespace Maurice
         private static IServiceProvider ConfigureServices()
         {
             var services = new ServiceCollection();
-            services.AddSingleton<IFileService, FileService>();
+            // Register DbContext with the connection string
+            services.AddDbContext<MauriceDbContext>(options =>
+            {
+                var folder = Environment.SpecialFolder.LocalApplicationData;
+                var path = Environment.GetFolderPath(folder);
+                var dbPath = System.IO.Path.Combine(path, "maurice.db");
+                options.UseSqlite($"Data Source={dbPath}");
+            });
+            services.AddSingleton<IFileService, Maurice.Core.Services.FileService>();
             services.AddSingleton<IDatabaseService, DatabaseService>();
             services.AddTransient<AgregarFacturaViewModel>();
             services.AddTransient<ConfiguracionViewModel>();

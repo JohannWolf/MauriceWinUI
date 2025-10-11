@@ -8,9 +8,9 @@ namespace Maurice.Data
     {
         private readonly MauriceDbContext _context;
 
-        public DatabaseService()
+        public DatabaseService(MauriceDbContext context)
         {
-            _context = new MauriceDbContext();
+            _context = context;
         }
 
         public async Task InitializeDatabaseAsync()
@@ -72,6 +72,11 @@ namespace Maurice.Data
 
             var nomina = await _context.Nominas.FirstOrDefaultAsync(n => n.UUID == uuid);
             return nomina;
+        }
+
+        public async Task<User> GetUserAsync()
+        {
+            return await _context.Users.FirstOrDefaultAsync();
         }
 
         public async Task SaveUserAsync(User user)

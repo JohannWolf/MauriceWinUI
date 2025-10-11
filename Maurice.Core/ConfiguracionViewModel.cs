@@ -13,20 +13,83 @@ namespace Maurice.Core
             _databaseService = databaseService;
         }
         [ObservableProperty]
-        public string _statusMessage = "";
+        private User _currentUser = new User();
+
+        [ObservableProperty]
+        private string _statusMessage = "Cargando...";
+
+        [ObservableProperty]
+        private bool _isUserConfigured;
+
+        [ObservableProperty]
+        private bool _isLoading = true;
 
         [RelayCommand]
-        public async Task SaveUserData(User user)
+        private async Task LoadUserAsync()
         {
             try
             {
-                await _databaseService.SaveUserAsync(user);
-                StatusMessage = "Datos guardados correctamente";
+                IsLoading = true;
+                StatusMessage = "Cargando configuración...";
+
+                var user = await _databaseService.GetUserAsync();
+                if (user != null)
+                {
+                    CurrentUser = user;
+                    IsUserConfigured = true;
+                    StatusMessage = "Usuario cargado correctamente";
+                }
             }
             catch (Exception ex)
             {
-                StatusMessage = $"Error al guardar datos: {ex.Message}";
+                StatusMessage = $"Error al cargar usuario: {ex.Message}";
             }
+            finally
+            {
+                IsLoading = false;
+                StatusMessage = IsUserConfigured ? "Configuración lista" : "Por favor, configure su usuario";
+            }
+        }
+        [RelayCommand]
+        private async Task SaveUserAsync()
+        {
+            if (!CanSaveUser()) return; 
+            try
+            {
+                IsLoading = true;
+                StatusMessage = "Guardando usuario...";
+
+                await _databaseService.SaveUserAsync(CurrentUser);
+                IsUserConfigured = true;
+                StatusMessage = "Usuario guardado correctamente";
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"Error al guardar usuario: {ex.Message}";
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+        }
+
+        private bool CanSaveUser()
+        {
+            if (IsLoading) return false;
+            if (CurrentUser == null) return false;
+
+            if (string.IsNullOrWhiteSpace(CurrentUser?.FirstName) &&
+                   string.IsNullOrWhiteSpace(CurrentUser?.LastName) &&
+                   string.IsNullOrWhiteSpace(CurrentUser?.Rfc)) {
+                StatusMessage = "Todos los campos son requeridos";
+                return false;
+            }
+            if(CurrentUser.Rfc.Length != 13)
+            {
+                StatusMessage = "El RFC debe tener 13 caracteres";
+                return false;
+            }
+            return true;
         }
     }
 }
