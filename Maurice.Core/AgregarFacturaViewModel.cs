@@ -92,7 +92,7 @@ namespace Maurice.Core
                 }
                 else
                 {
-                    StatusMessage = $"El comprobante {comprobante.UUID} ya existe en la base de datos";
+                    throw new InvalidOperationException("El comprobante ya existe en la base de datos");
                 }
 
                 CurrentComprobante = null;

@@ -37,6 +37,18 @@ namespace Maurice.Data
                     return false; // Already exists
                 }
 
+                var user = await GetUserAsync();
+
+                if (user == null)
+                {
+                    throw new ApplicationException("Ningun usuario registrado aun.");
+                }
+
+                if (comprobante.RfcReceptor != user.Rfc)
+                {
+                    throw new ApplicationException("El RFC del receptor no coincide con el usuario registrado.");
+                }
+
                 if (comprobante is Factura factura)
                 {
                     await _context.Facturas.AddAsync(factura);
