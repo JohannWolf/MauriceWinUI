@@ -11,5 +11,6 @@ namespace Maurice.Data
         Task<Comprobante> GetComprobanteByUUIDAsync(string uuid);
         Task SaveUserAsync(User user);
         Task<User> GetUserAsync();
+        Task<List<Comprobante>> SearchComprobantesAsync(string? rfc = null, DateTime? date = null);
     }
 }

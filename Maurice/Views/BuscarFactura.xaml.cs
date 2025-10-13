@@ -2,6 +2,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
 using Maurice.Core;
+using Microsoft.Extensions.DependencyInjection;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -19,7 +20,8 @@ public sealed partial class BuscarFactura
     {
         InitializeComponent();
         PopulateYears();
-        ViewModel = new BuscarFacturaViewModel();    
+        PopulateMonths();
+        ViewModel = App.Services.GetService<BuscarFacturaViewModel>();
         DataContext = ViewModel;
     }
     private void SelectAll_Checked(object sender, RoutedEventArgs e)
@@ -110,6 +112,36 @@ public sealed partial class BuscarFactura
         {
             YearComboBox.Items.Add(year.ToString());
         }
+    }
+
+    private void PopulateMonths()
+    {
+        MonthComboBox.Items.Clear();
+        for (int month = 1; month <= 12; month++)
+        {
+            var monthName = new DateTime(1, month, 1).ToString("MMMM");
+            var comboBoxItem = new ComboBoxItem
+            {
+                //Capitalize first letter of the month
+                Content = char.ToUpper(monthName[0]) + monthName.Substring(1),
+                Tag = month // Store the month number in the Tag property
+            };
+            MonthComboBox.Items.Add(comboBoxItem);
+        }
+    }
+
+    private void SearchButton_Click(object sender, RoutedEventArgs e)
+    {
+        ViewModel.SearchRfc = RfcOptionCheckBox.IsChecked == true
+            ? RfcTextBox.Text
+            : null;
+        ViewModel.SearchDate = DateOptionCheckBox.IsChecked == true
+            ? GetSelectedDate()
+            : null;
+        // Clear previous results
+        ViewModel.SearchResults.Clear();
+        // Execute search
+        ViewModel.SearchCommand.Execute(null);
     }
 
     // Get selected date

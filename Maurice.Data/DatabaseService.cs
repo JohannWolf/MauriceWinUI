@@ -86,6 +86,44 @@ namespace Maurice.Data
             return nomina;
         }
 
+        public async Task<List<Comprobante>> SearchComprobantesAsync(string? rfc = null, DateTime? date = null)
+        {
+
+            var facturasQuery = _context.Facturas.AsQueryable(); 
+            var nominasQuery = _context.Nominas.AsQueryable();
+
+            if (!string.IsNullOrEmpty(rfc))
+            {
+                if(date.HasValue)
+                {
+                    facturasQuery = facturasQuery.Where(f => f.RfcEmisor == rfc && f.Fecha.Value.Year == date.Value.Year && f.Fecha.Value.Month == date.Value.Month);
+                    nominasQuery = nominasQuery.Where(n => n.RfcEmisor == rfc && n.Fecha.Value.Year == date.Value.Year && n.Fecha.Value.Month == date.Value.Month);
+                }
+                else
+                {
+                    facturasQuery = facturasQuery.Where(f => f.RfcEmisor == rfc);
+                    nominasQuery = nominasQuery.Where(n => n.RfcEmisor == rfc);
+                }
+            }
+            else if (date.HasValue)
+            {
+                facturasQuery = facturasQuery.Where(f => f.Fecha.Value.Year == date.Value.Year && f.Fecha.Value.Month == date.Value.Month);
+                nominasQuery = nominasQuery.Where(n => n.Fecha.Value.Year == date.Value.Year && n.Fecha.Value.Month == date.Value.Month);
+            }
+            // Execute both queries
+            var facturas = await facturasQuery.ToListAsync();
+            var nominas = await nominasQuery.ToListAsync();
+
+            // Combine and order results
+            var allResults = new List<Comprobante>();
+            allResults.AddRange(facturas);
+            allResults.AddRange(nominas);
+
+            return allResults
+                .OrderByDescending(c => c.Fecha)
+                .ToList();
+        }
+
         public async Task<User> GetUserAsync()
         {
             return await _context.Users.FirstOrDefaultAsync();

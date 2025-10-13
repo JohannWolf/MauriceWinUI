@@ -48,6 +48,7 @@ namespace Maurice
             services.AddSingleton<IDatabaseService, DatabaseService>();
             services.AddTransient<AgregarFacturaViewModel>();
             services.AddTransient<ConfiguracionViewModel>();
+            services.AddTransient<BuscarFacturaViewModel>();
             return services.BuildServiceProvider();
         }
 

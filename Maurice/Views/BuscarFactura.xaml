@@ -4,11 +4,16 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Maurice.Views"
+    xmlns:converters="using:CommunityToolkit.WinUI.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Width="500"
     Height="450">
+
+    <Page.Resources>
+        <converters:StringFormatConverter x:Key="StringFormatConverter" />
+    </Page.Resources>
 
     <Grid 
         HorizontalAlignment="Center">
@@ -21,11 +26,12 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="150"/>
-            <ColumnDefinition Width="125"/>
-            <ColumnDefinition Width="125"/>
+            <ColumnDefinition Width="150"/>
+            <ColumnDefinition Width="100"/>
             <ColumnDefinition Width="100"/>
         </Grid.ColumnDefinitions>
         
+        <!-- Title -->
         <TextBlock 
             Text="Buscar Factura" 
             FontSize="20" 
@@ -34,6 +40,19 @@
             Grid.Row="0"
             Grid.ColumnSpan="3"
             HorizontalAlignment="Center"/>
+        <!-- Status Message -->
+        <TextBlock 
+            Text="{Binding StatusMessage}" 
+            FontWeight="SemiBold"
+            Grid.Row="1"
+            Grid.Column="1"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Margin="10"
+            Foreground="{ThemeResource SystemAccentColor}"
+            TextWrapping="Wrap"
+            TextAlignment="Center"/>
         <CheckBox 
             x:Name="OptionsAllCheckBox" 
             Content="Buscar por:" 
@@ -64,33 +83,23 @@
         <!--Date Picker-->
         <ComboBox 
             x:Name="MonthComboBox" 
-            Width="100" 
+            Width="120" 
             Margin="20,0,0,0"
             Grid.Column="1"
             Grid.Row="2"
             PlaceholderText="Mes"
+            SelectedItem="{Binding SelectedMonth}"
             IsEnabled="false">
-            <ComboBoxItem Content="Enero" Tag="1"/>
-            <ComboBoxItem Content="Febrero" Tag="2"/>
-            <ComboBoxItem Content="Marzo" Tag="3"/>
-            <ComboBoxItem Content="Abril" Tag="4"/>
-            <ComboBoxItem Content="Mayo" Tag="5"/>
-            <ComboBoxItem Content="Junio" Tag="6"/>
-            <ComboBoxItem Content="Julio" Tag="7"/>
-            <ComboBoxItem Content="Agosto" Tag="8"/>
-            <ComboBoxItem Content="Septiembre" Tag="9"/>
-            <ComboBoxItem Content="Octubre" Tag="10"/>
-            <ComboBoxItem Content="Noviembre" Tag="11"/>
-            <ComboBoxItem Content="Diciembre" Tag="12"/>
         </ComboBox>
 
         <ComboBox 
             x:Name="YearComboBox" 
-            Width="100" 
-            Margin="20,0,0,0"
+            Width="80" 
+            Margin="15,0,0,0"
             Grid.Column="2"
             Grid.Row="2"
             PlaceholderText="Año"
+            SelectedItem="{Binding SelectedYear, Mode=TwoWay}"
             IsEnabled="False">
             <!-- Populate years dynamically in code-behind -->
         </ComboBox>
@@ -109,6 +118,7 @@
             Grid.ColumnSpan="2"/>
         <Button 
             Style="{StaticResource AccentButtonStyle}" 
+            Click="SearchButton_Click"
             Content="Buscar"  
             Margin="10,20" 
             HorizontalAlignment="Center"
@@ -117,7 +127,7 @@
             Grid.Column="3"/>
 
         <ListView 
-            ItemsSource="{Binding TestData}"
+            ItemsSource="{Binding SearchResults}"
             Margin="0,20,0,0"
             Grid.Row="4"
             Grid.Column="0"
@@ -127,36 +137,36 @@
             <ListView.Header>
                 <Grid Background="{ThemeResource SubtleFillColorSecondaryBrush}" Padding="12">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="120"/>
                         <ColumnDefinition Width="80"/>
                         <ColumnDefinition Width="100"/>
-                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="100"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="RFC" FontWeight="Bold"/>
                     <TextBlock Text="Folio" FontWeight="Bold" Grid.Column="1"/>
                     <TextBlock Text="Fecha" FontWeight="Bold" Grid.Column="2"/>
                     <TextBlock Text="Total" FontWeight="Bold" Grid.Column="3"/>
-                    <TextBlock Text="Impuesto" FontWeight="Bold" Grid.Column="4"/>
+                    <TextBlock Text="Tipo" FontWeight="Bold" Grid.Column="4"/>
                 </Grid>
             </ListView.Header>
 
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Grid Padding="8">
+                    <Grid Padding="1">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="120"/>
                             <ColumnDefinition Width="80"/>
                             <ColumnDefinition Width="100"/>
-                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition Width="100"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Text="{Binding RfcEmisor}" FontWeight="SemiBold"/>
+                        <TextBlock Text="{Binding RfcEmisor}" FontWeight="SemiBold" Margin="-8,0,0,0" />
                         <TextBlock Text="{Binding Folio}" Grid.Column="1"/>
-                        <TextBlock Text="{Binding Date}" Grid.Column="2"/>
-                        <TextBlock Text="{Binding Total}" Grid.Column="3"/>
-                        <TextBlock Text="{Binding Impuesto}" Grid.Column="4"/>
+                        <TextBlock Text="{Binding Fecha, Converter={StaticResource StringFormatConverter},ConverterParameter='{}{0:dd/MM/yyyy}'}" Grid.Column="2"/>
+                        <TextBlock Text="{Binding Total, Converter={StaticResource StringFormatConverter},ConverterParameter='{}${0:000,00.00}'}" Grid.Column="3"/>
+                        <TextBlock Text="{Binding TipoDeDocumento}" Grid.Column="4"/>
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
