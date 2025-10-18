@@ -38,7 +38,7 @@ namespace Maurice.Core
                     rfc: SearchRfc,
                     date: SearchDate
                     );
-
+                SearchResults.Clear();
                 foreach (var item in results)
                 {
                     SearchResults.Add(item);

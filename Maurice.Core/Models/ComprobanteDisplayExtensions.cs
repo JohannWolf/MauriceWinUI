@@ -111,7 +111,6 @@ namespace Maurice.Core.Models
             display.Campos.AddRange(new[]
             {
                 new DisplayField { Nombre = "SubTotal", Valor = comprobante.SubTotal.ToString("C2"), Categoria = "Totales" },
-                new DisplayField { Nombre = "Descuento", Valor = comprobante.Descuento.ToString("C2"), Categoria = "Totales" },
                 new DisplayField { Nombre = "Total", Valor = comprobante.Total.ToString("C2"), Categoria = "Totales" }
             });
 

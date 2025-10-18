@@ -1,13 +1,18 @@
-﻿using System;
-using System.Linq;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 using Windows.Storage;
 using Maurice.Data.Models;
+using Maurice.Data;
+using System.Security.AccessControl;
 
 namespace Maurice.Core.Services
 {
     public class FileService : IFileService
     {
+        private readonly IDatabaseService _databaseService;
+        public FileService(IDatabaseService databaseService)
+        {
+            _databaseService = databaseService;
+        }
         public async Task<Comprobante> ProcessXmlFileAsync(StorageFile file)
         {
             try
@@ -22,15 +27,15 @@ namespace Maurice.Core.Services
                 var comprobante = doc.Root;
                 if (comprobante != null)
                 {
-                    var documentType = TipoDeDocumento(comprobante);
+                    var documentType = comprobante.Attribute("TipoDeComprobante")?.Value == "N" ? "Nomina" : "Factura";
 
                     if (documentType == "Nomina")
                     {
-                        return CreateNominaFromXml(comprobante, file.Name);
+                        return await CreateNominaFromXml(comprobante, file.Name);
                     }
                     else
                     {
-                        return CreateFacturaFromXml(comprobante, file.Name);
+                        return await CreateFacturaFromXml(comprobante, file.Name);
                     }
                 }
 
@@ -42,7 +47,7 @@ namespace Maurice.Core.Services
             }
         }
 
-        private Factura CreateFacturaFromXml(XElement comprobante, string fileName)
+        private async Task<Factura> CreateFacturaFromXml(XElement comprobante, string fileName)
         {
             var factura = new Factura
             {
@@ -50,7 +55,6 @@ namespace Maurice.Core.Services
                 Folio = comprobante.Attribute("Folio")?.Value,
                 Fecha = ParseDateTime(comprobante.Attribute("Fecha")?.Value),
                 SubTotal = ParseDecimal(comprobante.Attribute("SubTotal")?.Value),
-                Descuento = ParseDecimal(comprobante.Attribute("Descuento")?.Value),
                 Total = ParseDecimal(comprobante.Attribute("Total")?.Value),
                 FileName = fileName
             };
@@ -92,19 +96,28 @@ namespace Maurice.Core.Services
             var impuestos = comprobante.Element(XName.Get("Impuestos", "http://www.sat.gob.mx/cfd/4"));
             if (impuestos != null)
             {
+                var retencion = impuestos.Descendants(XName.Get("Retencion", "http://www.sat.gob.mx/cfd/4")).FirstOrDefault();
+                if (retencion != null)
+                {
+                    //Retencion -> Importe = ISR Retenido
+                    factura.RetencionImpuesto = ParseDecimal(retencion.Attribute("Importe")?.Value ?? "0.00");
+                }
                 var traslado = impuestos.Descendants(XName.Get("Traslado", "http://www.sat.gob.mx/cfd/4")).FirstOrDefault();
                 if (traslado != null)
                 {
                     factura.Base = ParseDecimal(traslado.Attribute("Base")?.Value ?? "0.00");
                     factura.Tasa = traslado.Attribute("TasaOCuota")?.Value ?? "Excento";
+                    //Traslado -> Importe = IVA
                     factura.ImporteImpuesto = ParseDecimal(traslado.Attribute("Importe")?.Value ?? "0.00");
                 }
             }
 
+            factura.TipoDeTransaccion = await TransactionType(factura);
+
             return factura;
         }
 
-        private Nomina CreateNominaFromXml(XElement comprobante, string fileName)
+        private async Task<Nomina> CreateNominaFromXml(XElement comprobante, string fileName)
         {
             var nomina = new Nomina
             {
@@ -112,7 +125,6 @@ namespace Maurice.Core.Services
                 Folio = comprobante.Attribute("Folio")?.Value,
                 Fecha = ParseDateTime(comprobante.Attribute("Fecha")?.Value),
                 SubTotal = ParseDecimal(comprobante.Attribute("SubTotal")?.Value),
-                Descuento = ParseDecimal(comprobante.Attribute("Descuento")?.Value),
                 Total = ParseDecimal(comprobante.Attribute("Total")?.Value),
                 FileName = fileName
             };
@@ -143,7 +155,7 @@ namespace Maurice.Core.Services
                     }
 
                     nomina.TotalPercepciones = nomina.SubTotal;
-                    nomina.TotalDeducciones = nomina.Descuento;
+                    nomina.TotalDeducciones = ParseDecimal(comprobante.Attribute("Descuento")?.Value);
                 }
             }
 
@@ -160,12 +172,24 @@ namespace Maurice.Core.Services
                 nomina.RfcReceptor = receptor.Attribute("Rfc")?.Value;
             }
 
+            nomina.TipoDeTransaccion = await TransactionType(nomina);
+
             return nomina;
         }
-
-        private string TipoDeDocumento(XElement comprobante)
+        //if else can be used but practicing pattern matching
+        private async Task<int> TransactionType(Comprobante comprobante)
         {
-            return comprobante.Attribute("TipoDeComprobante")?.Value == "N" ? "Nomina" : "Factura";
+            var user = await _databaseService.GetUserAsync();
+
+            return comprobante switch
+            {
+                { RfcEmisor: not null } when comprobante.RfcEmisor == user.Rfc => 1, //ingreso
+                { RfcReceptor: not null } when comprobante.RfcReceptor == user.Rfc
+                    && comprobante.TipoDeDocumento == "Nomina" => 1,
+                { RfcReceptor: not null} when comprobante.RfcReceptor == user.Rfc
+                    && comprobante.TipoDeDocumento == "Factura" => 2, //Egreso
+                _ => 0 //Invalid
+            };
         }
 
         private DateTime? ParseDateTime(string dateString)

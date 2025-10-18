@@ -101,7 +101,6 @@
             PlaceholderText="Año"
             SelectedItem="{Binding SelectedYear, Mode=TwoWay}"
             IsEnabled="False">
-            <!-- Populate years dynamically in code-behind -->
         </ComboBox>
         <!--RFC Input-->
         <TextBox 

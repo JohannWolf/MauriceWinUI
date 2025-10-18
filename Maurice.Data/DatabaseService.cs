@@ -44,9 +44,9 @@ namespace Maurice.Data
                     throw new ApplicationException("Ningun usuario registrado aun.");
                 }
 
-                if (comprobante.RfcReceptor != user.Rfc)
+                if (comprobante.RfcReceptor != user.Rfc && comprobante.RfcEmisor != user.Rfc)
                 {
-                    throw new ApplicationException("El RFC del receptor no coincide con el usuario registrado.");
+                    throw new ApplicationException("El RFC no coincide con el usuario registrado.");
                 }
 
                 if (comprobante is Factura factura)
@@ -151,7 +151,7 @@ namespace Maurice.Data
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("Error saving user data", ex);
+                throw new ApplicationException("Error al guardar usuario", ex);
             }
         }
 

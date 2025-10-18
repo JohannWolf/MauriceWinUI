@@ -12,9 +12,11 @@ namespace Maurice.Data.Models
         public decimal TotalGravado { get; set; }
         public decimal TotalExento { get; set; }
         public decimal TotalPercepciones { get; set; }
-
+        //TotalImpuestosRetenidos = ISR A Cargo
         public decimal TotalImpuestosRetenidos { get; set; }
+        //IMSS, INFONAVIT, SAR, etc.
         public decimal TotalOtrasDeducciones { get; set; }
+        // TotalDeducciones = TotalImpuestosRetenidos + TotalOtrasDeducciones
         public decimal TotalDeducciones { get; set; }
 
         // Nomina-specific validation

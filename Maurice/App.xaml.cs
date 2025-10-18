@@ -49,6 +49,8 @@ namespace Maurice
             services.AddTransient<AgregarFacturaViewModel>();
             services.AddTransient<ConfiguracionViewModel>();
             services.AddTransient<BuscarFacturaViewModel>();
+            services.AddTransient<ReporteMensualViewModel>();
+            services.AddTransient<ReporteAnualViewModel>();
             return services.BuildServiceProvider();
         }
 

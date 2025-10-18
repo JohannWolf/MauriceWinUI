@@ -1,3 +1,5 @@
+using Maurice.Core;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -19,14 +21,17 @@ using Windows.Foundation.Collections;
 namespace Maurice.Views
 {
     /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// NEeed to adjust reports to avoid repetitive code
     /// </summary>
     public sealed partial class ReporteAnual : Page
     {
+        public ReporteAnualViewModel ViewModel { get; }
         public ReporteAnual()
         {
             InitializeComponent();
             PopulateYears();
+            ViewModel = App.Services.GetService<ReporteAnualViewModel>();
+            DataContext = ViewModel;
         }
         private void PopulateYears()
         {
@@ -35,6 +40,29 @@ namespace Maurice.Views
             {
                 YearComboBox.Items.Add(year.ToString());
             }
+        }
+        private void YearComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var selectedYear = GetSelectedMonth();
+            if (selectedYear.HasValue)
+            {
+                ViewModel.SearchDate = selectedYear.Value;
+                ViewModel.GenerateReportCommand.ExecuteAsync(null);
+            }
+        }
+        private DateTime? GetSelectedMonth()
+        {
+            if (YearComboBox.SelectedItem is string yearText &&
+            int.TryParse(yearText, out int year))
+            {
+                return new DateTime(year);
+            }
+            return null;
+        }
+        //Generate report for current month by default
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            ViewModel.GenerateReportCommand.ExecuteAsync(null);
         }
     }
 }

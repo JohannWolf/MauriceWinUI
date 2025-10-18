@@ -29,7 +29,7 @@ namespace Maurice.Views
         public AgregarFactura()
         {
             InitializeComponent();
-            IFileService fileService = new FileService();
+            IFileService fileService = App.Services.GetService<IFileService>();
             ViewModel = App.Services.GetService<AgregarFacturaViewModel>();
             // Subscribe to the event
             ViewModel.ShowPreviewRequested += ShowPreviewDialogHandler;

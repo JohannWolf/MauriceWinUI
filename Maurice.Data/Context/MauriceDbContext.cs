@@ -15,6 +15,18 @@ namespace Maurice.Data.Context
         public DbSet<Factura> Facturas { get; set; }
         public DbSet<Nomina> Nominas { get; set; }
         public DbSet<User> Users { get; set; }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                // This is only used for design-time operations like migrations
+                var folder = Environment.SpecialFolder.LocalApplicationData;
+                var path = Environment.GetFolderPath(folder);
+                var dbPath = System.IO.Path.Combine(path, "maurice.db");
+                optionsBuilder.UseSqlite($"Data Source={dbPath}");
+            }
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Indexes (not supported by Data Annotations)

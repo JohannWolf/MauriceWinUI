@@ -12,7 +12,10 @@ namespace Maurice.Data.Models
         [Required]
         public decimal Base { get; set; }
         public string Tasa { get; set; }
+        //Traslado -> Importe = IVA
         public decimal ImporteImpuesto { get; set; }
+        //Retencion -> Importe = ISR Retenido
+        public decimal RetencionImpuesto { get; set; }
 
         // Factura-specific validation
         public override bool IsValid()

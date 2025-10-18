@@ -11,6 +11,8 @@ namespace Maurice.Data.Models
 
         // Common fields for all document types
         [Required]
+        public int TipoDeTransaccion { get; set; }
+        [Required]
         public string TipoDeDocumento { get; set; }
         [Required]
         public string Folio { get; set; }
@@ -32,7 +34,7 @@ namespace Maurice.Data.Models
 
         // Totales (common to both)
         public decimal SubTotal { get; set; }
-        public decimal Descuento { get; set; }
+        //Total Payment after deductions in Nomina or plus taxes in Factura
         public decimal Total { get; set; }
 
         // Metadata
