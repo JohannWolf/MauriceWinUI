@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Maurice.Data;
 using Maurice.Data.Models;
 using System.Collections.ObjectModel;
+using static Maurice.Data.DatabaseService;
 
 namespace Maurice.Core
 {
@@ -36,7 +37,8 @@ namespace Maurice.Core
                 //Call database service to get results based on criteria
                 var results = await _databaseService.SearchComprobantesAsync(
                     rfc: SearchRfc,
-                    date: SearchDate
+                    date: SearchDate,
+                    period: SearchPeriod.Monthly
                     );
                 SearchResults.Clear();
                 foreach (var item in results)

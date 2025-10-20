@@ -86,30 +86,37 @@ namespace Maurice.Data
             return nomina;
         }
 
-        public async Task<List<Comprobante>> SearchComprobantesAsync(string? rfc = null, DateTime? date = null)
+        public enum SearchPeriod
         {
+            Monthly,
+            Annual
+        }
 
-            var facturasQuery = _context.Facturas.AsQueryable(); 
+        public async Task<List<Comprobante>> SearchComprobantesAsync(string? rfc = null, DateTime? date = null, SearchPeriod period = SearchPeriod.Monthly)
+        {
+            var facturasQuery = _context.Facturas.AsQueryable();
             var nominasQuery = _context.Nominas.AsQueryable();
 
             if (!string.IsNullOrEmpty(rfc))
             {
-                if(date.HasValue)
-                {
-                    facturasQuery = facturasQuery.Where(f => f.RfcEmisor == rfc && f.Fecha.Value.Year == date.Value.Year && f.Fecha.Value.Month == date.Value.Month);
-                    nominasQuery = nominasQuery.Where(n => n.RfcEmisor == rfc && n.Fecha.Value.Year == date.Value.Year && n.Fecha.Value.Month == date.Value.Month);
-                }
-                else
-                {
-                    facturasQuery = facturasQuery.Where(f => f.RfcEmisor == rfc);
-                    nominasQuery = nominasQuery.Where(n => n.RfcEmisor == rfc);
-                }
+                facturasQuery = facturasQuery.Where(f => f.RfcEmisor == rfc);
+                nominasQuery = nominasQuery.Where(n => n.RfcEmisor == rfc);
             }
-            else if (date.HasValue)
+
+            if (date.HasValue)
             {
-                facturasQuery = facturasQuery.Where(f => f.Fecha.Value.Year == date.Value.Year && f.Fecha.Value.Month == date.Value.Month);
-                nominasQuery = nominasQuery.Where(n => n.Fecha.Value.Year == date.Value.Year && n.Fecha.Value.Month == date.Value.Month);
+                if (period == SearchPeriod.Monthly)
+                {
+                    facturasQuery = facturasQuery.Where(f => f.Fecha.Value.Year == date.Value.Year && f.Fecha.Value.Month == date.Value.Month);
+                    nominasQuery = nominasQuery.Where(n => n.Fecha.Value.Year == date.Value.Year && n.Fecha.Value.Month == date.Value.Month);
+                }
+                else // Annual
+                {
+                    facturasQuery = facturasQuery.Where(f => f.Fecha.Value.Year == date.Value.Year);
+                    nominasQuery = nominasQuery.Where(n => n.Fecha.Value.Year == date.Value.Year);
+                }
             }
+
             // Execute both queries
             var facturas = await facturasQuery.ToListAsync();
             var nominas = await nominasQuery.ToListAsync();

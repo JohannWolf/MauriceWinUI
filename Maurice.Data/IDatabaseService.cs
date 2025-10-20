@@ -1,4 +1,5 @@
 ﻿using Maurice.Data.Models;
+using static Maurice.Data.DatabaseService;
 
 namespace Maurice.Data
 {
@@ -11,6 +12,6 @@ namespace Maurice.Data
         Task<Comprobante> GetComprobanteByUUIDAsync(string uuid);
         Task SaveUserAsync(User user);
         Task<User> GetUserAsync();
-        Task<List<Comprobante>> SearchComprobantesAsync(string? rfc = null, DateTime? date = null);
+        Task<List<Comprobante>> SearchComprobantesAsync(string? rfc = null, DateTime? date = null, SearchPeriod period = SearchPeriod.Monthly);
     }
 }

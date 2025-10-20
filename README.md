@@ -1,14 +1,35 @@
 # Maurice
+## Personal Invoice & Tax Management System 
+#### -- In Development
 
-## Purpose
-Become a tool for keeping track of invoices, income, expenses and taxes. Some screenshots below
+### Purpose
+Maurice is a WinUI 3 desktop application that simplifies personal financial tracking by automatically organizing invoices, calculating taxes, and providing clear financial insights. Solving the chaos of managing email invoices and unwanted billing documents. Some screenshots below
 
-# Configuration
+### Architecture: 
+Clean Architecture with MVVM pattern
+
+### Data Persistence: 
+Entity Framework Core with SQLite
+
+### XML Processing: 
+Robust CFDI (Mexican invoice format) parsing
+
+### Key Features:
+
+    📄 Smart Invoice Processing: Automatic XML invoice parsing and categorization
+
+    📊 Financial Reporting: Monthly/annual expense tracking with intelligent summaries
+
+    🔍 Advanced Search: Flexible querying across multiple criteria and time periods
+
+    🛡️ Data Integrity: Unique constraint enforcement and duplicate prevention
+
+## Configuration
 <img width="921" height="522" alt="imagen" src="https://github.com/user-attachments/assets/f18b0e27-c529-4a4f-8d88-d34e773c77d1" />
 
-# Add File
+## Add File
 <img width="921" height="522" alt="imagen" src="https://github.com/user-attachments/assets/3f536fe9-3be2-47d6-a82e-3907615359f9" />
 <img width="920" height="520" alt="imagen" src="https://github.com/user-attachments/assets/db5bd2c9-c285-498f-a0dd-9ae22804be9c" />
 
-# Search
+## Search
 <img width="920" height="533" alt="imagen" src="https://github.com/user-attachments/assets/0ff61f2f-a1f5-4086-9928-1a9315e6748d" />

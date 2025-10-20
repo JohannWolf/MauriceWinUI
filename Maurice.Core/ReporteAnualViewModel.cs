@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Maurice.Data;
 using Maurice.Data.Models;
 using System.Collections.ObjectModel;
+using static Maurice.Data.DatabaseService;
 
 namespace Maurice.Core
 {
@@ -43,7 +44,7 @@ namespace Maurice.Core
             {
                 // Logic to generate monthly report based on SelectedMonth
                 var date = SearchDate;
-                var reportData = await _databaseService.SearchComprobantesAsync(date: date);
+                var reportData = await _databaseService.SearchComprobantesAsync(date: date, period: SearchPeriod.Annual);
                 // Process reportData as needed for the report
                 ReportData.Clear();
                 foreach (var item in reportData)
