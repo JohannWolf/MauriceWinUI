@@ -28,5 +28,16 @@ namespace Maurice.Data.Models
         {
             return Tasa == "Excento" ? "Exento" : "Gravado";
         }
+        public override decimal GetIncomeAmount()
+            => TipoDeTransaccion == 1 ? Total : 0;
+
+        public override decimal GetExpenseAmount()
+            => TipoDeTransaccion == 2 ? Total : 0;
+
+        public override decimal GetIVAAmount()
+            => ImporteImpuesto;
+
+        public override decimal GetISRAmount()
+            => RetencionImpuesto;
     }
 }

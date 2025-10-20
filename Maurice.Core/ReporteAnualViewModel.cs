@@ -2,13 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Maurice.Data;
 using Maurice.Data.Models;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.ApplicationModel.Search;
 
 namespace Maurice.Core
 {
@@ -71,37 +65,10 @@ namespace Maurice.Core
         }
         private void CalculateAmounts(ICollection<Comprobante> reportResult)
         {
-            decimal totalExpense = 0;
-            decimal totalIncome = 0;
-            decimal totalIsr = 0;
-            decimal totalIVA = 0;
-            foreach (var item in reportResult)
-            {
-                if (item.TipoDeTransaccion == 1) // Income
-                {
-                    totalIncome += item.Total;
-                    if (item is Nomina nomina)
-                    {
-                        totalIsr += nomina.TotalImpuestosRetenidos;
-                    }
-                    else if (item is Factura factura)
-                    {
-                        totalIVA += factura.RetencionImpuesto;
-                    }
-                }
-                else if (item.TipoDeTransaccion == 2) // Expense
-                {
-                    totalExpense += item.Total;
-                    if (item is Factura factura)
-                    {
-                        totalIVA += factura.ImporteImpuesto;
-                    }
-                }
-            }
-            TotalExpenses = totalExpense;
-            TotalIncomes = totalIncome;
-            TotalISRRetenido = totalIsr;
-            TotalIVA = totalIVA;
+            TotalExpenses = reportResult.Sum(c => c.GetExpenseAmount());
+            TotalIncomes = reportResult.Sum(c => c.GetIncomeAmount());
+            TotalISRRetenido = reportResult.Sum(c => c.GetISRAmount());
+            TotalIVA = reportResult.Sum(c => c.GetIVAAmount());
         }
     }
 }

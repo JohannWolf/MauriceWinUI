@@ -30,5 +30,16 @@ namespace Maurice.Data.Models
         {
             return TotalPercepciones - TotalDeducciones;
         }
+        public override decimal GetIncomeAmount()
+         => TipoDeTransaccion == 1 ? Total : 0;
+
+        public override decimal GetExpenseAmount() 
+            => 0; // Nominas are income only in my context
+
+        public override decimal GetIVAAmount()
+            => 0; // No IVA in Nominas
+
+        public override decimal GetISRAmount()
+            => TotalImpuestosRetenidos;
     }
 }

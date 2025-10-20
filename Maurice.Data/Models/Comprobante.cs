@@ -46,5 +46,10 @@ namespace Maurice.Data.Models
         {
             return !string.IsNullOrEmpty(UUID) && !string.IsNullOrEmpty(RfcEmisor);
         }
+
+        public abstract decimal GetIncomeAmount();
+        public abstract decimal GetExpenseAmount();
+        public abstract decimal GetIVAAmount();
+        public abstract decimal GetISRAmount();
     }
 }

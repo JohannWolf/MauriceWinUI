@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Maurice.Views"
     xmlns:converters="using:CommunityToolkit.WinUI.Converters"
+    xmlns:localConverters="using:Maurice.Core.Services"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
@@ -13,6 +14,7 @@
 
     <Page.Resources>
         <converters:StringFormatConverter x:Key="StringFormatConverter" />
+        <localConverters:CurrencyConverter x:Key="CurrencyConverter"/>
     </Page.Resources>
 
     <Grid 
@@ -164,7 +166,7 @@
                         <TextBlock Text="{Binding RfcEmisor}" FontWeight="SemiBold" Margin="-8,0,0,0" />
                         <TextBlock Text="{Binding Folio}" Grid.Column="1"/>
                         <TextBlock Text="{Binding Fecha, Converter={StaticResource StringFormatConverter},ConverterParameter='{}{0:dd/MM/yyyy}'}" Grid.Column="2"/>
-                        <TextBlock Text="{Binding Total, Converter={StaticResource StringFormatConverter},ConverterParameter='{}${0:000,00.00}'}" Grid.Column="3"/>
+                        <TextBlock Text="{Binding Total, Converter={StaticResource CurrencyConverter}}" Grid.Column="3"/>
                         <TextBlock Text="{Binding TipoDeDocumento}" Grid.Column="4"/>
                     </Grid>
                 </DataTemplate>
