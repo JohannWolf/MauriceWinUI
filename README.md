@@ -3,7 +3,7 @@
 #### -- In Development
 
 ### Purpose
-Maurice is a WinUI 3 desktop application that simplifies personal financial tracking by automatically organizing invoices, calculating taxes, and providing clear financial insights. Solving the chaos of managing email invoices and unwanted billing documents. Some screenshots below
+Maurice is a WinUI 3 desktop application that simplifies personal financial tracking by automatically organizing invoices, calculating taxes, and providing clear financial insights. Solving the chaos of managing email invoices and unwanted billing documents. 
 
 ### Architecture: 
 Clean Architecture with MVVM pattern
@@ -24,6 +24,12 @@ Robust CFDI (Mexican invoice format) parsing
 
     🛡️ Data Integrity: Unique constraint enforcement and duplicate prevention
 
+## UML Diagrams
+### Class diagrams
+#### Maurice.Data
+<img width="1312" height="793" alt="UML MauriceData" src="https://github.com/user-attachments/assets/4b7b21b4-25fc-4731-a8c5-e1da5a3135f9" />
+
+## Some screenshots below
 ## Configuration
 <img width="921" height="522" alt="imagen" src="https://github.com/user-attachments/assets/f18b0e27-c529-4a4f-8d88-d34e773c77d1" />
 
