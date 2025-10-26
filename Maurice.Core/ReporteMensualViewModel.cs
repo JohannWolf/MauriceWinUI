@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using Maurice.Data;
 using Maurice.Data.Models;
 using System.Collections.ObjectModel;
@@ -7,96 +6,38 @@ using static Maurice.Data.DatabaseService;
 
 namespace Maurice.Core
 {
-    public partial class ReporteMensualViewModel:ObservableObject
+    public partial class ReporteMensualViewModel: BaseReporteViewModel
     {
-        private readonly IDatabaseService _databaseService;
-
         public ReporteMensualViewModel(IDatabaseService databaseService)
+            : base(databaseService)
         {
-            _databaseService = databaseService;
         }
+        [ObservableProperty]
+        private string _title = "Reporte Mensual";
+        [ObservableProperty]
+        private ObservableCollection<MonthItem> _availableMonths = new();
+        [ObservableProperty]
+        private int? _selectedMonth;
 
-        [ObservableProperty]
-        private DateTime _searchDate = DateTime.Now;
-        [ObservableProperty]
-        private ObservableCollection<Comprobante> _reportData = new();
-        [ObservableProperty]
-        private bool _isGeneratingReport;
-        [ObservableProperty]
-        private string _statusMessage = "Listo para generar reporte";
-        [ObservableProperty]
-        private decimal _totalIncomes;
-        [ObservableProperty]
-        private decimal _totalExpenses;
-        [ObservableProperty]
-        private int _numberOfRecords;
-        [ObservableProperty]
-        private decimal _totalISRRetenido;
-        [ObservableProperty]
-        private decimal _totalIVA;
-
-        [RelayCommand]
-        private async Task GenerateReportAsync()
+        protected override async Task<List<Comprobante>> GetReportDataAsync()
         {
-            IsGeneratingReport = true;
-            StatusMessage = "Generando reporte mensual...";
+            var reportData = new List<Comprobante>();
             try
             {
                 // Logic to generate monthly report based on SelectedMonth
-                var date = SearchDate;
-                var reportData = await _databaseService.SearchComprobantesAsync(date:date,period : SearchPeriod.Monthly);
-                // Process reportData as needed for the report
-                ReportData.Clear();
-                foreach (var item in reportData)
-                {
-                    ReportData.Add(item);
-                }
-                NumberOfRecords = ReportData.Count;
-                CalculateAmounts(ReportData);
+                reportData = await _databaseService.SearchComprobantesAsync(date: SearchDate, period: SearchPeriod.Monthly);
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine("Error generating report: {Message}",ex.Message);
+                System.Diagnostics.Debug.WriteLine("Error generating report: {Message}", ex.Message);
             }
-            finally
-            {
-                IsGeneratingReport = false;
-                StatusMessage = "Reporte generado.";
-            }
+            return reportData;
         }
-        private void CalculateAmounts(ICollection<Comprobante> reportResult)
-        {             
-            decimal totalExpense = 0;
-            decimal totalIncome = 0;
-            decimal totalIsr = 0;
-            decimal totalIVA = 0;
-            foreach (var item in reportResult)
-            {
-                if (item.TipoDeTransaccion == 1) // Income
-                {
-                    totalIncome += item.Total;
-                    if (item is Nomina nomina)
-                    {
-                        totalIsr += nomina.TotalImpuestosRetenidos;
-                    }
-                    else if (item is Factura factura)
-                    {
-                        totalIVA += factura.RetencionImpuesto;
-                    }
-                }
-                else if (item.TipoDeTransaccion == 2) // Expense
-                {
-                    totalExpense += item.Total;
-                    if (item is Factura factura)
-                    {
-                        totalIVA += factura.ImporteImpuesto;
-                    }
-                }
-            }
-            TotalExpenses = totalExpense;
-            TotalIncomes = totalIncome;
-            TotalISRRetenido = totalIsr;
-            TotalIVA = totalIVA;
+        // Helper class for months
+        public class MonthItem
+        {
+            public string Name { get; set; } = string.Empty;
+            public int Value { get; set; }
         }
     }
 }

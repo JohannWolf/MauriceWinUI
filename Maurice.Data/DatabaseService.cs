@@ -61,9 +61,9 @@ namespace Maurice.Data
                 await _context.SaveChangesAsync();
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw new ApplicationException("Error saving comprobante", ex);
+                throw;
             }
         }
 

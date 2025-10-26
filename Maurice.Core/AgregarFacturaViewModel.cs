@@ -99,7 +99,7 @@ namespace Maurice.Core
             }
             catch (Exception ex)
             {
-                StatusMessage = $"Error al guardar: {ex.Message}";
+                StatusMessage = ex.InnerException!=null ? $"Error al guardar: {ex.InnerException.Message}" : $"Error al guardar: {ex.Message}";
                 throw;
             }
         }

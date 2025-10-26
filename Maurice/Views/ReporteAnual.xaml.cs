@@ -1,19 +1,9 @@
 using Maurice.Core;
+using Maurice.Views.Shared;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -21,7 +11,7 @@ using Windows.Foundation.Collections;
 namespace Maurice.Views
 {
     /// <summary>
-    /// NEeed to adjust reports to avoid repetitive code
+    /// Need to adjust reports to avoid repetitive code
     /// </summary>
     public sealed partial class ReporteAnual : Page
     {
@@ -29,40 +19,43 @@ namespace Maurice.Views
         public ReporteAnual()
         {
             InitializeComponent();
-            PopulateYears();
             ViewModel = App.Services.GetService<ReporteAnualViewModel>();
             DataContext = ViewModel;
+            PopulateYears();
         }
+
+        //Generate report for current month by default
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            //Auto-generate report for current year
+            ViewModel.GenerateReportCommand.ExecuteAsync(null);
+        }
+        //Date Pickers
         private void PopulateYears()
         {
+            ViewModel.AvailableYears.Clear();
             int currentYear = DateTime.Now.Year;
             for (int year = currentYear; year >= currentYear - 10; year--)
             {
-                YearComboBox.Items.Add(year.ToString());
+                ViewModel.AvailableYears.Add(year);
             }
         }
         private void YearComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var selectedYear = GetSelectedMonth();
+            var selectedYear = GetSelectedYear();
             if (selectedYear.HasValue)
             {
                 ViewModel.SearchDate = selectedYear.Value;
                 ViewModel.GenerateReportCommand.ExecuteAsync(null);
             }
         }
-        private DateTime? GetSelectedMonth()
+        private DateTime? GetSelectedYear()
         {
-            if (YearComboBox.SelectedItem is string yearText &&
-            int.TryParse(yearText, out int year))
+            if (ViewModel.SelectedYear.HasValue)
             {
-                return new DateTime(year);
+                return new DateTime(ViewModel.SelectedYear.Value,1,1);
             }
             return null;
-        }
-        //Generate report for current month by default
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-            ViewModel.GenerateReportCommand.ExecuteAsync(null);
         }
     }
 }

@@ -1,9 +1,9 @@
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using System;
 using Maurice.Core;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
+using System;
+using static Maurice.Core.ReporteMensualViewModel;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -13,29 +13,24 @@ namespace Maurice.Views;
 /// <summary>
 /// An empty page that can be used on its own or navigated to within a Frame.
 /// </summary>
-public sealed partial class ReporteMensual
+public sealed partial class ReporteMensual: Page
 {
     public ReporteMensualViewModel ViewModel { get; }
     public ReporteMensual()
     {
         InitializeComponent();
-        PopulateMonths();
         ViewModel = App.Services.GetService<ReporteMensualViewModel>();
         DataContext = ViewModel;
+        PopulateMonths();
     }
     private void PopulateMonths()
     {
-        MonthComboBox.Items.Clear();
+        ViewModel.AvailableMonths.Clear();
         for (int month = 1; month <= 12; month++)
         {
             var monthName = new DateTime(1, month, 1).ToString("MMMM");
-            var comboBoxItem = new ComboBoxItem
-            {
-                //Capitalize first letter of the month
-                Content = char.ToUpper(monthName[0]) + monthName.Substring(1),
-                Tag = month // Store the month number in the Tag property
-            };
-            MonthComboBox.Items.Add(comboBoxItem);
+            string capitalizedMonthName = char.ToUpper(monthName[0]) + monthName.Substring(1);
+            ViewModel.AvailableMonths.Add(new MonthItem { Name = capitalizedMonthName, Value = month });
         }
     }
     private void MonthComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -50,10 +45,9 @@ public sealed partial class ReporteMensual
     private DateTime? GetSelectedMonth()
     {
         int year = DateTime.Now.Year;
-        if (MonthComboBox.SelectedItem is ComboBoxItem monthItem &&
-            int.TryParse(monthItem.Tag.ToString(), out int month))
+        if (ViewModel.SelectedMonth.HasValue)
         {
-            return new DateTime(year, month, 1);
+            return new DateTime(year,ViewModel.SelectedMonth.Value, 1);
         }
         return null;
     }
