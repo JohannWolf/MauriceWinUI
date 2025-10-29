@@ -11,11 +11,13 @@ namespace Maurice.Data.Models
 
         // Common fields for all document types
         [Required]
+        // 1 = Ingreso, 2 = Egreso
         public int TipoDeTransaccion { get; set; }
         [Required]
         public string TipoDeDocumento { get; set; }
+        public string? Folio { get; set; }
         [Required]
-        public string Folio { get; set; }
+        public string UsoCFDI { get; set; }
         [Required]
         public DateTime? Fecha { get; set; }
         [Required]
@@ -31,6 +33,7 @@ namespace Maurice.Data.Models
         [Required]
         [MaxLength(13)]
         public string RfcReceptor { get; set; }
+        public int RegimenFiscalReceptor { get; set; }
 
         // Totales (common to both)
         public decimal SubTotal { get; set; }

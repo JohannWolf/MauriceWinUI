@@ -1,5 +1,4 @@
 using Maurice.Core;
-using Maurice.Data.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
@@ -27,6 +26,14 @@ namespace Maurice.Views
         {
             // Auto-load user data when page is navigated to
             ViewModel.LoadUserCommand.ExecuteAsync(null);
+        }
+        private void OnCancelButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        {
+            // Navigate back to the previous page
+            if (Frame.CanGoBack)
+            {
+                Frame.GoBack();
+            }
         }
     }
 }

@@ -37,7 +37,13 @@ namespace Maurice.Core
         private decimal _totalISRRetenido;
 
         [ObservableProperty]
-        private decimal _totalIVA;
+        private decimal _totalIVAPorPagar;
+        [ObservableProperty]
+        private decimal _totalIVAPagado;
+        [ObservableProperty]
+        public decimal _netAmount;
+        [ObservableProperty]
+        public decimal _IsDeductibleAmount;
         [ObservableProperty]
         private int _numberOfRecords;
 
@@ -80,7 +86,8 @@ namespace Maurice.Core
             TotalExpenses = 0;
             TotalIncomes = 0;
             TotalISRRetenido = 0;
-            TotalIVA = 0;
+            TotalIVAPorPagar = 0;
+            TotalIVAPagado = 0;
             StatusMessage = "Seleccione el período";
         }
 
@@ -93,7 +100,9 @@ namespace Maurice.Core
             TotalExpenses = reportResult.Sum(c => c.GetExpenseAmount());
             TotalIncomes = reportResult.Sum(c => c.GetIncomeAmount());
             TotalISRRetenido = reportResult.Sum(c => c.GetISRAmount());
-            TotalIVA = reportResult.Sum(c => c.GetIVAAmount());
+            TotalIVAPorPagar = reportResult.Where(c => c.TipoDeTransaccion == 1).Sum(c => c.GetIVAAmount());
+            TotalIVAPagado = reportResult.Where(c => c.TipoDeTransaccion == 2).Sum(c => c.GetIVAAmount());
+            NetAmount = TotalIncomes - (TotalExpenses + TotalIVAPorPagar);
         }
     }
 }

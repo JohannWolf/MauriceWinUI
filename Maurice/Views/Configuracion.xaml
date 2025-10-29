@@ -110,20 +110,52 @@
             Text="{Binding CurrentUser.Rfc, Mode=TwoWay}"
             IsEnabled="{Binding IsLoading,Converter={StaticResource BoolNegationConverter}}"/>
 
+        <TextBox
+            Header="Regimen Fiscal"
+            Text="Regimen Fiscal" 
+            Grid.Row="5"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Margin="10"
+            Width="400"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            IsEnabled="False"
+            Visibility="{Binding IsInEditMode,Converter={StaticResource BoolNegationConverter}}"/>
+
+        <!-- ComboBox for Regimen Fiscal -->
+        <ComboBox 
+            Header="Régimen Fiscal" 
+            Grid.Row="5"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Margin="10"
+            Width="400"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            ItemsSource="{Binding RegimenesFiscales}"
+            DisplayMemberPath="Descripcion"
+            SelectedValuePath="Id"
+            SelectedValue="{Binding CurrentUser.RegimenFiscalId, Mode=TwoWay}"
+            IsEnabled="{Binding CanSaveOrEdit}"
+            Visibility="{Binding ShowRegimenFiscalComboBox}"/>
+
         <!-- Buttons -->
         <Button 
             Style="{StaticResource AccentButtonStyle}" 
-            Content="Guardar" 
-            Grid.Row="5"
+            Content="{Binding SaveButtonText}"
+            Command="{Binding SaveUserCommand}"
+            IsEnabled="{Binding CanSaveOrEdit}"
+            Grid.Row="6"
             Grid.Column="0"
-            HorizontalAlignment="Center"
-            Command="{Binding SaveUserCommand}"/>
+            HorizontalAlignment="Center"/>
 
         <Button 
             Content="Cancelar" 
-            Grid.Row="5"
+            Grid.Row="6"
             Grid.Column="1"
             HorizontalAlignment="Center"
-            IsEnabled="{Binding IsLoading,Converter={StaticResource BoolNegationConverter}}"/>
+            IsEnabled="{Binding IsLoading,Converter={StaticResource BoolNegationConverter}}"
+            Click="OnCancelButton_Click"/>
     </Grid>
 </Page>

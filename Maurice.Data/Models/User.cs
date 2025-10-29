@@ -15,6 +15,9 @@ namespace Maurice.Data.Models
         [Required]
         [MaxLength(13)]
         public string Rfc { get; set; }
+        [Required]
+        public List<RegimenFiscal> RegimenesFiscales { get; set; } = new();
         public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime UpdatedAt { get; set; } = DateTime.Now;
     }
 }

@@ -19,9 +19,6 @@ namespace Maurice
         public MainWindow()
         {
             InitializeComponent();
-            // Create the service and pass it to ViewModel
-            //IFileService fileService = new FileService();
-            //ViewModel = new MainViewModel(fileService);
         }
 
         private void NavView_Loaded(object sender, RoutedEventArgs e)

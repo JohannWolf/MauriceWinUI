@@ -147,6 +147,8 @@ namespace Maurice.Data
                     existingUser.FirstName = user.FirstName;
                     existingUser.LastName = user.LastName;
                     existingUser.Rfc = user.Rfc;
+                    existingUser.RegimenesFiscales = user.RegimenesFiscales;
+                    existingUser.UpdatedAt = DateTime.UtcNow;
                     _context.Set<User>().Update(existingUser);
                 }
                 else

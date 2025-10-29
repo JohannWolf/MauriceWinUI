@@ -91,6 +91,10 @@ namespace Maurice.Core.Services
                 {
                     factura.Descripcion = "Honorarios medicos y gastos hospitalarios";
                 }
+                else
+                {
+                    factura.Descripcion = concepto.Attribute("Descripcion")?.Value;
+                }
             }
 
             var impuestos = comprobante.Element(XName.Get("Impuestos", "http://www.sat.gob.mx/cfd/4"));
