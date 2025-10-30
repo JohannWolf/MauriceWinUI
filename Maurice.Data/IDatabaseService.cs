@@ -13,5 +13,6 @@ namespace Maurice.Data
         Task SaveUserAsync(User user);
         Task<User> GetUserAsync();
         Task<List<Comprobante>> SearchComprobantesAsync(string? rfc = null, DateTime? date = null, SearchPeriod period = SearchPeriod.Monthly);
+        Task<List<RegimenFiscal>> GetRegimenesFiscalesAsync();
     }
 }

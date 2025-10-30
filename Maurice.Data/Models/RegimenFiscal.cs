@@ -14,6 +14,5 @@ namespace Maurice.Data.Models
         public int Clave { get; set; }
         [Required]
         public string Name { get; set; } = string.Empty;
-        public string Descripcion { get; set; } = string.Empty;
     }
 }

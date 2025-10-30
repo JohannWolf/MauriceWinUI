@@ -164,6 +164,11 @@ namespace Maurice.Data
             }
         }
 
+        public async Task<List<RegimenFiscal>> GetRegimenesFiscalesAsync()
+        {
+            return await _context.RegimenesFiscales.ToListAsync();
+        }
+
         public void Dispose()
         {
             _context?.Dispose();

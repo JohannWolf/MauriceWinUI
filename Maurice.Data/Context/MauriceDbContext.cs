@@ -15,6 +15,8 @@ namespace Maurice.Data.Context
         public DbSet<Factura> Facturas { get; set; }
         public DbSet<Nomina> Nominas { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<UsoCFDI> UsosCFDI { get; set; }
+        public DbSet<RegimenFiscal> RegimenesFiscales { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

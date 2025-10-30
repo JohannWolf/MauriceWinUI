@@ -1,14 +1,11 @@
-using Maurice.Core;
-using Maurice.Core.Services;
 using Maurice.Views;
+using Microsoft.UI;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml.Navigation;
 using System;
-using System.Linq;
-using Windows.Storage.Pickers;
-using WinRT.Interop; // Added for WindowNative
+using Windows.Graphics;
 
 namespace Maurice
 {
@@ -19,6 +16,16 @@ namespace Maurice
         public MainWindow()
         {
             InitializeComponent();
+            // Get the window handle
+            IntPtr hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
+
+            var windowId = Win32Interop.GetWindowIdFromWindow(hwnd);
+
+            AppWindow appWindow = AppWindow.GetFromWindowId(windowId);
+
+            // Set the desired size using Resize()
+
+            appWindow.Resize(new SizeInt32(1200, 900)); // Set width to 800 pixels and height to 600 pixels
         }
 
         private void NavView_Loaded(object sender, RoutedEventArgs e)
