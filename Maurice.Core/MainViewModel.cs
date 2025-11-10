@@ -1,9 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using Maurice.Core.Models;
-using Maurice.Core.Services;
-using System.Collections.ObjectModel;
-using Windows.Storage;
 
 namespace Maurice.Core
 {

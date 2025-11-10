@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.Input;
 using Maurice.Data;
 using Maurice.Data.Models;
-using Microsoft.UI.Xaml.Controls;
 using System.Collections.ObjectModel;
 
 namespace Maurice.Core
@@ -45,7 +44,9 @@ namespace Maurice.Core
         [ObservableProperty]
         public decimal _IsDeductibleAmount;
         [ObservableProperty]
-        private int _numberOfRecords;
+        private int _numberOfFacturas;
+        [ObservableProperty]
+        private int _numberOfNominas;
 
         // Common commands
         [RelayCommand]
@@ -66,8 +67,7 @@ namespace Maurice.Core
                 }
 
                 CalculateAmounts(ReportResult);
-                NumberOfRecords = ReportResult.Count;
-                StatusMessage = $"Reporte generado: {NumberOfRecords} comprobantes";
+                StatusMessage = $"Reporte generado exitosamente";
             }
             catch (Exception ex)
             {

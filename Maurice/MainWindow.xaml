@@ -21,6 +21,11 @@
         ItemInvoked="NavView_ItemInvoked">
 
         <NavigationView.MenuItems>
+            <NavigationViewItem
+                Content="Dashboard"
+                Icon="Home"
+                ToolTipService.ToolTip="Dashboard"
+                Tag="Dashboard"/>
             <NavigationViewItem 
                 Content="Facturas" 
                 Icon="Page2" 

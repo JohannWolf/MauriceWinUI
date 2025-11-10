@@ -16,6 +16,7 @@
     <None Remove="Views\AgregarFactura.xaml" />
     <None Remove="Views\BuscarFactura.xaml" />
     <None Remove="Views\Configuracion.xaml" />
+    <None Remove="Views\Dashboard.xaml" />
     <None Remove="Views\ReporteAnual.xaml" />
     <None Remove="Views\Shared\BaseReporte.xaml" />
     <None Remove="Views\XmlPreviewDialog.xaml" />
@@ -51,6 +52,11 @@
   <ItemGroup>
     <ProjectReference Include="..\Maurice.Core\Maurice.Core.csproj" />
     <ProjectReference Include="..\Maurice.Data\Maurice.Data.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\Dashboard.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Views\ReporteAnual.xaml">

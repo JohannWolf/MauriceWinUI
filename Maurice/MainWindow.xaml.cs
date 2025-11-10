@@ -25,7 +25,7 @@ namespace Maurice
 
             // Set the desired size using Resize()
 
-            appWindow.Resize(new SizeInt32(1200, 900)); // Set width to 800 pixels and height to 600 pixels
+            appWindow.Resize(new SizeInt32(1400, 900)); // Set width to 800 pixels and height to 600 pixels
         }
 
         private void NavView_Loaded(object sender, RoutedEventArgs e)
@@ -38,7 +38,7 @@ namespace Maurice
             // If navigation occurs on SelectionChanged, this isn't needed.
             // Because we use ItemInvoked to navigate, we need to call Navigate
             // here to load the home page.
-            NavView_Navigate(typeof(BuscarFactura), new EntranceNavigationTransitionInfo());
+            NavView_Navigate(typeof(Dashboard), new EntranceNavigationTransitionInfo());
         }
         private void NavView_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
         {
@@ -63,6 +63,7 @@ namespace Maurice
                 "Configuracion" => typeof(Configuracion),
                 "ReporteMensual" => typeof(ReporteMensual),
                 "ReporteAnual" => typeof(ReporteAnual),
+                "Dashboard" => typeof(Dashboard),
                 _ => null
             };
         }

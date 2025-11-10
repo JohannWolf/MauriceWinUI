@@ -4,8 +4,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Maurice.Views" 
-    xmlns:views="using:Maurice.Views.Shared"
-    Width="500">
+    xmlns:views="using:Maurice.Views.Shared">
 
     <!-- Pass the Page's DataContext to the BaseReporteView -->
     <views:BaseReporte DataContext="{Binding}">
