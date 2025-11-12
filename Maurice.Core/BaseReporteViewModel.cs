@@ -46,7 +46,11 @@ namespace Maurice.Core
         [ObservableProperty]
         private int _numberOfFacturas;
         [ObservableProperty]
+        private decimal _amountFacturas;
+        [ObservableProperty]
         private int _numberOfNominas;
+        [ObservableProperty]
+        private decimal _amountNominas;
 
         // Common commands
         [RelayCommand]
@@ -56,7 +60,7 @@ namespace Maurice.Core
             {
                 IsLoading = true;
                 StatusMessage = "Generando reporte...";
-                ReportResult.Clear();
+                ClearReport();
 
                 // Template method - derived classes implement this
                 var results = await GetReportDataAsync();
@@ -88,6 +92,10 @@ namespace Maurice.Core
             TotalISRRetenido = 0;
             TotalIVAPorPagar = 0;
             TotalIVAPagado = 0;
+            NumberOfFacturas = 0;
+            AmountFacturas = 0;
+            NumberOfNominas = 0;
+            AmountNominas = 0;
             StatusMessage = "Seleccione el período";
         }
 
@@ -97,12 +105,32 @@ namespace Maurice.Core
         // Common calculations
         protected void CalculateAmounts(ICollection<Comprobante> reportResult)
         {
-            TotalExpenses = reportResult.Sum(c => c.GetExpenseAmount());
-            TotalIncomes = reportResult.Sum(c => c.GetIncomeAmount());
-            TotalISRRetenido = reportResult.Sum(c => c.GetISRAmount());
-            TotalIVAPorPagar = reportResult.Where(c => c.TipoDeTransaccion == 1).Sum(c => c.GetIVAAmount());
-            TotalIVAPagado = reportResult.Where(c => c.TipoDeTransaccion == 2).Sum(c => c.GetIVAAmount());
-            NetAmount = TotalIncomes - (TotalExpenses + TotalIVAPorPagar);
+            foreach (var comprobante in reportResult)
+            {
+                TotalExpenses += comprobante.GetExpenseAmount();
+                TotalIncomes += comprobante.GetIncomeAmount();
+                TotalISRRetenido += comprobante.GetISRAmount();
+
+                var ivaAmount = comprobante.GetIVAAmount();
+
+                switch (comprobante.TipoDeDocumento)
+                {
+                    case "Factura":
+                        if (comprobante.TipoDeTransaccion == 1)
+                        {
+                            TotalIVAPorPagar += ivaAmount;
+                            NumberOfFacturas++;
+                            AmountFacturas += comprobante.GetIncomeAmount();
+                        }
+                        else if (comprobante.TipoDeTransaccion == 2)
+                            TotalIVAPagado += ivaAmount;
+                        break;
+                    case "Nomina":
+                        NumberOfNominas++;
+                        AmountNominas += comprobante.GetIncomeAmount();
+                        break;
+                }
+            }
         }
     }
 }

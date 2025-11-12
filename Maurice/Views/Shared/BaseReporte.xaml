@@ -226,17 +226,26 @@
                     <TextBlock
                         Text="Facturado"
                         Margin="10,0"/>
+
                     <TextBlock
-                        Text="200 en 4 Facturas"
                         HorizontalAlignment="Right"
-                        Margin="10,0"/>
+                        Margin="10,0">
+                        <Run Text="{Binding AmountFacturas,Converter={StaticResource CurrencyConverter}}"/>
+                        <Run Text=" en "/>
+                        <Run Text="{Binding NumberOfFacturas}"/>
+                        <Run Text=" Facturas"/>
+                    </TextBlock>
                     <TextBlock
                         Text="Nominas"
                         Margin="10,0"/>
                     <TextBlock
-                        Text="200 en 4 Nominas"
                         HorizontalAlignment="Right"
-                        Margin="10,0"/>
+                        Margin="10,0">
+                        <Run Text="{Binding AmountNominas,Converter={StaticResource CurrencyConverter}}"/>
+                        <Run Text=" en "/>
+                        <Run Text="{Binding NumberOfNominas}"/>
+                        <Run Text=" Nominas"/>                    
+                    </TextBlock>
 
                 </StackPanel>
             </Grid>
